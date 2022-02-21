@@ -1,10 +1,15 @@
+package controllers;
+
+import model.Epic;
+import model.Subtask;
+import model.Task;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
+
+
 public class Manager {
-    private int identifierTask;
-    private int identifierEpic;
-    private int identifierSubtask;
     private HashMap<Integer, Task> tasks;
     private HashMap<Integer, Epic> epics;
 
@@ -12,9 +17,6 @@ public class Manager {
     public Manager() {
         tasks = new HashMap<>();
         epics = new HashMap<>();
-        identifierTask = 0;
-        identifierEpic = 0;
-        identifierSubtask = 0;
     }
 
     public HashMap<Integer, Task> getTasks() {
@@ -23,6 +25,11 @@ public class Manager {
 
     public HashMap<Integer, Epic> getEpics() {
         return epics;
+    }
+
+    private int generateId () { // генерация id
+        int id = (int) ( Math.random() * 1_000_000_000);
+        return id;
     }
 
     public ArrayList<Task> getTasksList () { // получаем список задач
@@ -43,8 +50,9 @@ public class Manager {
     }
 
     public HashMap<Integer, Task> getNewTask (Task task) { // добавление новой задачи
-        identifierTask = identifierTask + 1;
-        tasks.put(identifierTask, task);
+        int newId = generateId ();
+        task.setId(newId);
+        tasks.put(newId, task);
         return tasks;
     }
 
@@ -82,8 +90,9 @@ public class Manager {
     }
 
     public HashMap<Integer, Epic> getNewSubtask (Subtask subtask, int epicId) { // создаем подзадачи
-        identifierSubtask = identifierSubtask + 1;
-        epics.get(epicId).getSubtasks().put(identifierSubtask, subtask);
+        int newId = generateId ();
+        subtask.setId(newId);
+        epics.get(epicId).getSubtasks().put(newId, subtask);
         return epics;
     }
 
@@ -119,8 +128,9 @@ public class Manager {
     }
 
     public HashMap<Integer, Epic> getNewEpic (Epic epic) { // добавление нового эпика
-        identifierEpic = identifierEpic + 1;
-        epics.put(identifierEpic, epic);
+        int newId = generateId ();
+        epic.setId(newId);
+        epics.put(newId, epic);
         return epics;
     }
 
