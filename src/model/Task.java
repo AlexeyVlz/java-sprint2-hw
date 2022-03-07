@@ -5,10 +5,10 @@ import java.util.Objects;
 public class Task {
     private String title ="";
     private String specification;
-    private String status;
+    protected Status status;
     private int id;
 
-    public Task(String title, String specification, String status) {
+    public Task(String title, String specification, Status status) {
         this.title = title;
         this.specification = specification;
         this.status = status;
@@ -20,7 +20,7 @@ public class Task {
         id = 0;
     }
 
-    public String getStatus() {
+    public Status getStatus() {
         return status;
     }
 
