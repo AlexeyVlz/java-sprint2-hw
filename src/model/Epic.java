@@ -5,7 +5,7 @@ import java.util.Objects;
 
 
 public class Epic extends Task {
-    private HashMap<Integer, Subtask> subtasks;
+    final private HashMap<Integer, Subtask> subtasks;
 
 
     public Epic(String title) {

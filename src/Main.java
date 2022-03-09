@@ -1,6 +1,5 @@
-import controllers.InMemoryHistoryManager;
-import controllers.InMemoryTaskManager;
 import controllers.Managers;
+import controllers.TaskManager;
 import model.Epic;
 import model.Subtask;
 import model.Task;
@@ -13,23 +12,18 @@ public class Main {
 
         System.out.println("Пришло время практики!");
 
-        InMemoryTaskManager manager = new InMemoryTaskManager();
+        TaskManager manager = Managers.getDefault();
+
 
         manager.getNewTask(new Task("Задача1", "Первая", Status.NEW)); // создаем задачи
         manager.getNewTask(new Task("Задача2", "Вторая", Status.NEW));
 
-        ArrayList<Integer> taskKeys = new ArrayList<>();
-        for (Integer key : manager.getTasks().keySet()){ // так как нет фронтэнда вытащил ключи задач для аргументов
-            taskKeys.add(key);
-        }
+        ArrayList<Integer> taskKeys = new ArrayList<>(manager.getTasks().keySet());// вытаскиваем ключи задач
 
-       manager.getNewEpic(new Epic("Эпик 1")); // создаем эпики
+        manager.getNewEpic(new Epic("Эпик 1")); // создаем эпики
         manager.getNewEpic(new Epic("Эпик 2"));
 
-        ArrayList<Integer> epicKeys = new ArrayList<>();
-        for (Integer key : manager.getEpics().keySet()){ // так как нет фронтэнда вытащил ключи эпиков для аргументов
-            epicKeys.add(key);
-        }
+        ArrayList<Integer> epicKeys = new ArrayList<>(manager.getEpics().keySet()); // вытаскиваем ключи эпиков
 
         manager.getNewSubtask(new Subtask("Подзадача 1", "Первая подзадача", Status.NEW,
                 epicKeys.get(0)));                                                               // создаем подзадачи
@@ -38,10 +32,9 @@ public class Main {
         manager.getNewSubtask(new Subtask("Подзадача", "Единственная подзадача", Status.NEW,
                 epicKeys.get(1)));
 
-        ArrayList<Integer> subtaskKeysFirstEpic = new ArrayList<>(); // вытащил ключи подзадач 1 эпика для аргументов
-        for (Integer key : manager.getEpics().get(epicKeys.get(0)).getSubtasks().keySet()){
-            subtaskKeysFirstEpic.add(key);
-        }
+        ArrayList<Integer> subtaskKeysFirstEpic = new ArrayList<>(manager.getEpics().get(epicKeys.get(0)).getSubtasks().
+                keySet()); // вытащил ключи подзадач 1 эпика для аргументов
+
 
         manager.updateTask(new Task("Задача 1", "Первая", Status.IN_PROGRESS));  // обновляем задачу
         manager.updateSubtask(subtaskKeysFirstEpic.get(0), new Subtask("Подзадача 1",

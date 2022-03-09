@@ -3,7 +3,7 @@ package model;
 import java.util.Objects;
 
 public class Task {
-    private String title ="";
+    private String title = "";
     private String specification;
     protected Status status;
     private int id;

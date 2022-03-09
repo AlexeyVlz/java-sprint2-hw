@@ -10,6 +10,11 @@ import java.util.HashMap;
 
 public interface TaskManager {
 
+    public HistoryManager getHistoryManager();
+
+    public HashMap<Integer, Task> getTasks();
+
+    public HashMap<Integer, Epic> getEpics();
 
     ArrayList<Task> getTasksList(); // получаем список задач
 
@@ -47,7 +52,6 @@ public interface TaskManager {
 
     HashMap<Integer, Epic> removeEpic(int identifier); // удаляем эпик по ID
 
-    //List<Task> history();
 }
 
 
