@@ -1,21 +1,15 @@
 package controllers;
 
-import model.Epic;
-import model.Subtask;
-import model.Task;
+import model.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import model.Status;
-
-
 
 
 public class InMemoryTaskManager implements TaskManager {
     final private HashMap<Integer, Task> tasks;
     final private HashMap<Integer, Epic> epics;
-    final private HistoryManager historyManager;
+    final private HistoryManager <Records> historyManager;
     int id;
 
     public InMemoryTaskManager() {
@@ -25,7 +19,7 @@ public class InMemoryTaskManager implements TaskManager {
         id = 0;
     }
 
-    public HistoryManager getHistoryManager() {
+    public HistoryManager<Records> getHistoryManager() {
         return historyManager;
     }
 

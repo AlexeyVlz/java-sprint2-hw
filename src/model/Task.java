@@ -2,55 +2,36 @@ package model;
 
 import java.util.Objects;
 
-public class Task {
-    private String title = "";
-    private String specification;
-    protected Status status;
-    private int id;
+public class Task extends Records {
+    final private String specification;
 
-    public Task(String title, String specification, Status status) {
-        this.title = title;
+
+    public Task(String title, Status status, String specification) {
+        super(title, status, 0);
         this.specification = specification;
-        this.status = status;
-        id = 0;
-    }
-
-    public Task(String title) {
-        this.title = title;
-        id = 0;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
         Task task = (Task) o;
-        return id == task.id && Objects.equals(title, task.title) && Objects.equals(specification, task.specification) && Objects.equals(status, task.status);
+        return Objects.equals(specification, task.specification);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(title, specification, status, id);
+        return Objects.hash(super.hashCode(), specification);
     }
 
     @Override
     public String toString() {
-        return "model.Task{" +
+        return "Task{" +
                 "title='" + title + '\'' +
+                ", status=" + status +
                 ", specification='" + specification + '\'' +
-                ", status='" + status + '\'' +
                 '}';
     }
+
 }

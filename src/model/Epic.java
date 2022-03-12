@@ -4,14 +4,12 @@ import java.util.HashMap;
 import java.util.Objects;
 
 
-public class Epic extends Task {
+public class Epic extends Records {
     final private HashMap<Integer, Subtask> subtasks;
 
-
     public Epic(String title) {
-        super(title);
+        super(title, 0);
         this.subtasks = new HashMap<>();
-        status = Status.NEW;
     }
 
     public HashMap<Integer, Subtask> getSubtasks() {
@@ -28,19 +26,20 @@ public class Epic extends Task {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         Epic epic = (Epic) o;
-        return Objects.equals(subtasks, epic.subtasks) && Objects.equals(status, epic.status);
+        return Objects.equals(subtasks, epic.subtasks);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), subtasks, status);
+        return Objects.hash(super.hashCode(), subtasks);
     }
 
     @Override
     public String toString() {
-        return "model.Epic{" +
+        return "Epic{" +
                 "subtasks=" + subtasks +
-                ", status='" + status + '\'' +
+                ", title='" + title + '\'' +
+                ", status=" + status +
                 '}';
     }
 }

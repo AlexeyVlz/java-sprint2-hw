@@ -44,7 +44,7 @@ public interface TaskManager {
 
     HashMap<Integer, Epic> clearEpicsList(); // очистка списка эпиков
 
-    Task getEpicById(int identifier); // получение эпика по идентификатору
+    Epic getEpicById(int identifier); // получение эпика по идентификатору
 
     HashMap<Integer, Epic> getNewEpic(Epic epic); // добавление нового эпика
 

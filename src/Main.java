@@ -15,8 +15,8 @@ public class Main {
         TaskManager manager = Managers.getDefault();
 
 
-        manager.getNewTask(new Task("Задача1", "Первая", Status.NEW)); // создаем задачи
-        manager.getNewTask(new Task("Задача2", "Вторая", Status.NEW));
+        manager.getNewTask(new Task("Задача1", Status.NEW, "Первая")); // создаем задачи
+        manager.getNewTask(new Task("Задача2", Status.NEW, "Вторая"));
 
         ArrayList<Integer> taskKeys = new ArrayList<>(manager.getTasks().keySet());// вытаскиваем ключи задач
 
@@ -25,20 +25,20 @@ public class Main {
 
         ArrayList<Integer> epicKeys = new ArrayList<>(manager.getEpics().keySet()); // вытаскиваем ключи эпиков
 
-        manager.getNewSubtask(new Subtask("Подзадача 1", "Первая подзадача", Status.NEW,
+        manager.getNewSubtask(new Subtask("Подзадача 1", Status.NEW, "Первая подзадача",
                 epicKeys.get(0)));                                                               // создаем подзадачи
-        manager.getNewSubtask(new Subtask("Подзадача 2", "Вторая подзадача", Status.NEW,
+        manager.getNewSubtask(new Subtask("Подзадача 2", Status.NEW, "Вторая подзадача",
                 epicKeys.get(0)));
-        manager.getNewSubtask(new Subtask("Подзадача", "Единственная подзадача", Status.NEW,
+        manager.getNewSubtask(new Subtask("Подзадача", Status.NEW, "Единственная подзадача",
                 epicKeys.get(1)));
 
         ArrayList<Integer> subtaskKeysFirstEpic = new ArrayList<>(manager.getEpics().get(epicKeys.get(0)).getSubtasks().
                 keySet()); // вытащил ключи подзадач 1 эпика для аргументов
 
 
-        manager.updateTask(new Task("Задача 1", "Первая", Status.IN_PROGRESS));  // обновляем задачу
-        manager.updateSubtask(subtaskKeysFirstEpic.get(0), new Subtask("Подзадача 1",
-                "Первая подзадача",Status.IN_PROGRESS, epicKeys.get(0)));          // обновляем подзадачу
+        manager.updateTask(new Task("Задача 1", Status.IN_PROGRESS, "Первая"));  // обновляем задачу
+        manager.updateSubtask(subtaskKeysFirstEpic.get(0), new Subtask("Подзадача 1", Status.IN_PROGRESS,
+                "Первая подзадача", epicKeys.get(0)));          // обновляем подзадачу
 
         System.out.println(manager.getTasksList());
         System.out.println(manager.getEpicsList());

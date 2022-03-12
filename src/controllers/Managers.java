@@ -6,8 +6,8 @@ public class Managers {
         return new InMemoryTaskManager();
     }
 
-    public static HistoryManager getDefaultHistory() {
-        return new InMemoryHistoryManager();
+    public static HistoryManager<model.Records> getDefaultHistory() {
+        return new InMemoryHistoryManager<>();
     }
 
 }

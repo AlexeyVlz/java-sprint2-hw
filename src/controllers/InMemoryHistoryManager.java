@@ -1,20 +1,20 @@
 package controllers;
 
-import model.Task;
+import model.Records;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class InMemoryHistoryManager implements HistoryManager {
+public class InMemoryHistoryManager <T extends Records> implements HistoryManager <T>  {
 
-    final private ArrayList<Task> history;
+    final private ArrayList<T> history;
 
     public InMemoryHistoryManager() {
         history = new ArrayList<>();
     }
 
     @Override
-    public void add(Task task) {
+    public void add(T task) {
         if (history.size() < 10) {
             history.add(task);
         } else {
@@ -24,7 +24,7 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     @Override
-    public List<Task> getHistory() {
+    public List<T> getHistory() {
         return history;
     }
 }
