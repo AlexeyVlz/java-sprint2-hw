@@ -29,35 +29,38 @@ public class Main {
                 epicKeys.get(0)));                                                               // создаем подзадачи
         manager.getNewSubtask(new Subtask("Подзадача 2", Status.NEW, "Вторая подзадача",
                 epicKeys.get(0)));
-        manager.getNewSubtask(new Subtask("Подзадача", Status.NEW, "Единственная подзадача",
-                epicKeys.get(1)));
+        manager.getNewSubtask(new Subtask("Подзадача 3", Status.NEW, "Третья подзадача",
+                epicKeys.get(0)));
 
         ArrayList<Integer> subtaskKeysFirstEpic = new ArrayList<>(manager.getEpics().get(epicKeys.get(0)).getSubtasks().
                 keySet()); // вытащил ключи подзадач 1 эпика для аргументов
 
 
-        manager.updateTask(new Task("Задача 1", Status.IN_PROGRESS, "Первая"));  // обновляем задачу
-        manager.updateSubtask(subtaskKeysFirstEpic.get(0), new Subtask("Подзадача 1", Status.IN_PROGRESS,
-                "Первая подзадача", epicKeys.get(0)));          // обновляем подзадачу
-
-        System.out.println(manager.getTasksList());
-        System.out.println(manager.getEpicsList());
-        System.out.println(manager.getSubtaskList(epicKeys.get(0)));
-        System.out.println(manager.getSubtaskList(epicKeys.get(1)));
-
-        System.out.println(manager.getTasksList());
-        System.out.println(manager.getEpicsList());
-
-        System.out.println(manager.getTasks().get(taskKeys.get(1)).getStatus());
-        System.out.println(manager.getEpics().get(epicKeys.get(0)).getStatus());
-
 
 
         manager.getTaskById(taskKeys.get(0)); // проверяем работоспособность истории
+        manager.getEpicById(epicKeys.get(1));
+        manager.getTaskById(taskKeys.get(1));
+        manager.getTaskById(taskKeys.get(0));
+        manager.getEpicById(epicKeys.get(1));
+        manager.getTaskById(taskKeys.get(0)); // проверяем работоспособность истории
+
+
         System.out.println(manager.getHistoryManager().getHistory());
 
-        manager.getEpicById(epicKeys.get(0));
+        manager.getTaskById(taskKeys.get(1));
+        manager.getTaskById(taskKeys.get(1));
+        manager.getTaskById(taskKeys.get(0));
+        manager.getTaskById(taskKeys.get(1));
+        manager.getTaskById(taskKeys.get(1));
+        manager.getTaskById(taskKeys.get(1));
+
+        //manager.getEpicById(epicKeys.get(0));
         System.out.println(manager.getHistoryManager().getHistory());
+
+
+
+
 
     }
 }

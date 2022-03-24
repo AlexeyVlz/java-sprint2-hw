@@ -49,6 +49,9 @@ public class InMemoryTaskManager implements TaskManager {
                 }
             }
         }
+        /*for (Task task : tasks.values()) {
+            historyManager.remove(task.getId());
+        }*/
         tasks.clear();
         return tasks;
     }
@@ -79,6 +82,7 @@ public class InMemoryTaskManager implements TaskManager {
                 historyManager.getHistory().remove(i);
             }
         }
+        /*historyManager.remove(identifier);*/
         tasks.remove(identifier);
         return tasks;
     }
@@ -177,6 +181,7 @@ public class InMemoryTaskManager implements TaskManager {
     public HashMap<Integer, Epic> getNewEpic (Epic epic) { // добавление нового эпика
         epic.setId(++id);
         epics.put(id, epic);
+        calculateStatus(id);
         return epics;
     }
 
