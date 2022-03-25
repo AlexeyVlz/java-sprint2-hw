@@ -31,6 +31,7 @@ public class InMemoryHistoryManager <T extends Records> implements HistoryManage
 
     @Override
     public List<T> getHistory() {
+        history.clear();
         getTasks();
         return history;
     }
@@ -38,6 +39,7 @@ public class InMemoryHistoryManager <T extends Records> implements HistoryManage
     public void linkLast (T task) {
         if(links.containsKey(task.getId())) {
             removeNode(links.get(task.getId()));
+
         }
         if(size >= 10) {
             tail = tail.getPrev();
@@ -66,9 +68,10 @@ public class InMemoryHistoryManager <T extends Records> implements HistoryManage
         if(size == 1) {
             history.add(head.getValue());
         } else {
+            Node <T> value = tail;
             for (int i = 0; i < size; i++) {
-                history.add(tail.getValue());
-                tail = tail.getPrev();
+                history.add(value.getValue());
+                value = value.getPrev();
             }
         }
     }
@@ -88,14 +91,15 @@ public class InMemoryHistoryManager <T extends Records> implements HistoryManage
             size--;
         } else if(node.getPrev() == null) {
             head = head.getNext();
-            head.setPrev(null);
+            head.getNext().setPrev(head);
             size--;
         } else if(node.getNext() == null) {
             tail = tail.getPrev();
-            tail.setNext(null);
+            tail.getPrev().setNext(tail);
             size--;
         } else {
             node.getPrev().setNext(node.getNext());
+            node.getNext().setPrev(node.getPrev());
             size--;
         }
     }

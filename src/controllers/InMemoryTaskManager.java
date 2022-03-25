@@ -42,16 +42,16 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public HashMap<Integer, Task> clearTasksList () { // очистка списка задач
-        for (int i = (historyManager.getHistory().size() - 1); i >= 0; i--) {
+        /*for (int i = (historyManager.getHistory().size() - 1); i >= 0; i--) {
             for (Task task : tasks.values()) {
                 if (historyManager.getHistory().get(i).getId() == task.getId()) {
                     historyManager.getHistory().remove(i);
                 }
             }
-        }
-        /*for (Task task : tasks.values()) {
-            historyManager.remove(task.getId());
         }*/
+        for (Task task : tasks.values()) {
+            historyManager.remove(task.getId());
+        }
         tasks.clear();
         return tasks;
     }
@@ -77,12 +77,12 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public HashMap<Integer, Task> removeTask (int identifier) { // удаляем задачу по ID
-        for (int i = (historyManager.getHistory().size() - 1); i >= 0; i--){
+        /*for (int i = (historyManager.getHistory().size() - 1); i >= 0; i--){
             if(historyManager.getHistory().get(i).getId() == identifier){
                 historyManager.getHistory().remove(i);
             }
-        }
-        /*historyManager.remove(identifier);*/
+        }*/
+        historyManager.remove(identifier);
         tasks.remove(identifier);
         return tasks;
     }
@@ -100,12 +100,15 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Epic clearSubtasks (int identifier) { // очищаем список подзадач по ID эпика
-        for(int i = (historyManager.getHistory().size() - 1); i >= 0; i--) {
+        /*for(int i = (historyManager.getHistory().size() - 1); i >= 0; i--) {
             for (Subtask subtask : epics.get(identifier).getSubtasks().values()){
                 if (historyManager.getHistory().get(i).getId() == subtask.getId()) {
                     historyManager.getHistory().remove(i);
                 }
             }
+        }*/
+        for (Subtask subtask : epics.get(identifier).getSubtasks().values()) {
+            historyManager.remove(subtask.getId());
         }
         epics.get(identifier).getSubtasks().clear();
         Status newStatus = calculateStatus(identifier);
@@ -141,11 +144,12 @@ public class InMemoryTaskManager implements TaskManager {
         epics.get(epicId).getSubtasks().remove(subtaskId);
         Status newStatus = calculateStatus(epicId);
         epics.get(epicId).setStatus(newStatus);
-        for (int i = (historyManager.getHistory().size() - 1); i >= 0; i--){
+        /*for (int i = (historyManager.getHistory().size() - 1); i >= 0; i--){
             if(historyManager.getHistory().get(i).getId() == subtaskId){
                 historyManager.getHistory().remove(i);
             }
-        }
+        }*/
+        historyManager.remove(subtaskId);
         return epics.get(epicId).getSubtasks();
     }
 
@@ -160,12 +164,15 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public HashMap<Integer, Epic> clearEpicsList () { // очистка списка эпиков
-        for (int i = 0; i < historyManager.getHistory().size(); i++) {
+        /*for (int i = 0; i < historyManager.getHistory().size(); i++) {
             for (Epic epic : epics.values()) {
                 if (historyManager.getHistory().get(i).getId() == epic.getId()) {
                     historyManager.getHistory().remove(i);
                 }
             }
+        }*/
+        for (Epic epic : epics.values()) {
+            historyManager.remove(epic.getId());
         }
         epics.clear();
         return epics;
@@ -194,11 +201,12 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public HashMap<Integer, Epic> removeEpic (int identifier) { // удаляем эпик по ID
         epics.remove(identifier);
-        for (int i = (historyManager.getHistory().size() - 1); i >= 0; i--){
+        /*for (int i = (historyManager.getHistory().size() - 1); i >= 0; i--){
             if(historyManager.getHistory().get(i).getId() == identifier){
                 historyManager.getHistory().remove(i);
             }
-        }
+        }*/
+        historyManager.remove(identifier);
         return epics;
     }
 

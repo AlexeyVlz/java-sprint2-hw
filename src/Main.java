@@ -37,7 +37,7 @@ public class Main {
 
 
 
-
+        manager.getSubtaskById(epicKeys.get(0), subtaskKeysFirstEpic.get(0));
         manager.getTaskById(taskKeys.get(0)); // проверяем работоспособность истории
         manager.getEpicById(epicKeys.get(1));
         manager.getTaskById(taskKeys.get(1));
@@ -45,18 +45,17 @@ public class Main {
         manager.getEpicById(epicKeys.get(1));
         manager.getTaskById(taskKeys.get(0)); // проверяем работоспособность истории
 
-
         System.out.println(manager.getHistoryManager().getHistory());
 
-        manager.getTaskById(taskKeys.get(1));
-        manager.getTaskById(taskKeys.get(1));
-        manager.getTaskById(taskKeys.get(0));
-        manager.getTaskById(taskKeys.get(1));
-        manager.getTaskById(taskKeys.get(1));
-        manager.getTaskById(taskKeys.get(1));
-
-        //manager.getEpicById(epicKeys.get(0));
+        manager.getEpicById(epicKeys.get(0));
         System.out.println(manager.getHistoryManager().getHistory());
+
+        manager.removeTask(taskKeys.get(0));
+        System.out.println(manager.getHistoryManager().getHistory());
+
+        manager.clearTasksList();
+        System.out.println(manager.getHistoryManager().getHistory());
+
 
 
 
