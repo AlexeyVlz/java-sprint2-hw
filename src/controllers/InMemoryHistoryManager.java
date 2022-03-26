@@ -10,7 +10,6 @@ public class InMemoryHistoryManager <T extends Records> implements HistoryManage
     final private Map<Integer, Node<T>> links;
     private Node<T> head = null;
     private Node<T> tail = null;
-    int size = 0;
 
     public InMemoryHistoryManager() {
         history = new ArrayList<>();
@@ -39,70 +38,41 @@ public class InMemoryHistoryManager <T extends Records> implements HistoryManage
     public void linkLast (T task) {
         if(links.containsKey(task.getId())) {
             removeNode(links.get(task.getId()));
-
-        }
-        if(size >= 10) {
-            tail = tail.getPrev();
-            tail.setNext(null);
-            size--;
         }
         if (head == null) {
             head = new Node<T>(task);
-            size++;
             links.put(task.getId(), head);
         } else if (tail == null) {
             tail = new Node<>(task, head);
             head.setNext(tail);
-            size++;
             links.put(task.getId(), tail);
         } else {
             Node<T> newNode = new Node<>(task, tail);
             tail.setNext(newNode);
             tail = newNode;
             links.put(task.getId(), tail);
-            size++;
         }
     }
 
     public void getTasks () {
-        if(size == 1) {
-            history.add(head.getValue());
-        } else {
-            Node <T> value = tail;
-            for (int i = 0; i < size; i++) {
-                history.add(value.getValue());
-                value = value.getPrev();
-            }
+        Node<T> node = head;
+        while (node != null){
+            history.add(node.getValue());
+            node = node.getNext();
         }
     }
 
     public void removeNode (Node<T> node) {
-        if (size <= 1) {
-            head = null;
-            size--;
-        } else if (size == 2 && node.getPrev() == null) {
+        if(node.getPrev() == null) {
             head = head.getNext();
             head.setPrev(null);
-            tail = null;
-            size--;
-        } else if (size == 2 && node.getNext() == null) {
-            tail = null;
-            head.setNext(null);
-            size--;
-        } else if(node.getPrev() == null) {
-            head = head.getNext();
-            head.getNext().setPrev(head);
-            size--;
-        } else if(node.getNext() == null) {
+        } else if (node.getNext() == null) {
             tail = tail.getPrev();
-            tail.getPrev().setNext(tail);
-            size--;
+            tail.setNext(null);
         } else {
             node.getPrev().setNext(node.getNext());
             node.getNext().setPrev(node.getPrev());
-            size--;
         }
     }
-
 
 }
