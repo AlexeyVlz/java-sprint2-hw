@@ -1,5 +1,7 @@
 package model;
 
+import controllers.Types;
+
 import java.util.Objects;
 
 public class Subtask extends Records {
@@ -32,10 +34,6 @@ public class Subtask extends Records {
 
     @Override
     public String toString() {
-        return "Subtask{" +
-                "title='" + title + '\'' +
-                ", status=" + status +
-                ", specification='" + specification + '\'' +
-                '}';
+        return id + "," + Types.SUBTASK + "," + title + "," + status + "," + specification + "," + epicId;
     }
 }

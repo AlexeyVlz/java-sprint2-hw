@@ -1,16 +1,15 @@
+import controllers.HistoryManager;
 import controllers.Managers;
 import controllers.TaskManager;
-import model.Epic;
-import model.Subtask;
-import model.Task;
-import model.Status;
+import model.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class Main {
+/*public class Main {
     public static void main(String[] args) {
 
-        System.out.println("Пришло время практики!");
+       System.out.println("Пришло время практики!");
 
         TaskManager manager = Managers.getDefault();
 
@@ -20,8 +19,8 @@ public class Main {
 
         ArrayList<Integer> taskKeys = new ArrayList<>(manager.getTasks().keySet());// вытаскиваем ключи задач
 
-        manager.getNewEpic(new Epic("Эпик 1")); // создаем эпики
-        manager.getNewEpic(new Epic("Эпик 2"));
+        manager.getNewEpic(new Epic("Эпик 1", "Первый")); // создаем эпики
+        manager.getNewEpic(new Epic("Эпик 2", "Второй"));
 
         ArrayList<Integer> epicKeys = new ArrayList<>(manager.getEpics().keySet()); // вытаскиваем ключи эпиков
 
@@ -57,9 +56,8 @@ public class Main {
         System.out.println(manager.getHistoryManager().getHistory());
 
 
-
-
-
-
     }
-}
+
+
+
+}*/

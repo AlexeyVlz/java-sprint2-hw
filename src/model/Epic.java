@@ -1,15 +1,19 @@
 package model;
 
+import controllers.Types;
+
 import java.util.HashMap;
 import java.util.Objects;
 
 
 public class Epic extends Records {
     final private HashMap<Integer, Subtask> subtasks;
+    final private String specification;
 
-    public Epic(String title) {
+    public Epic(String title, String specification) {
         super(title, 0);
         this.subtasks = new HashMap<>();
+        this.specification = specification;
     }
 
     public HashMap<Integer, Subtask> getSubtasks() {
@@ -36,10 +40,6 @@ public class Epic extends Records {
 
     @Override
     public String toString() {
-        return "Epic{" +
-                "subtasks=" + subtasks +
-                ", title='" + title + '\'' +
-                ", status=" + status +
-                '}';
+        return id + "," + Types.EPIC + "," + title + "," + status + "," + specification;
     }
 }

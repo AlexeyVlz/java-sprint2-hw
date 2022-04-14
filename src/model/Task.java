@@ -1,6 +1,7 @@
 package model;
 
 import java.util.Objects;
+import controllers.Types;
 
 public class Task extends Records {
     final private String specification;
@@ -27,11 +28,7 @@ public class Task extends Records {
 
     @Override
     public String toString() {
-        return "Task{" +
-                "title='" + title + '\'' +
-                ", status=" + status +
-                ", specification='" + specification + '\'' +
-                '}';
+        return id + "," + Types.TASK + "," + title + "," + status + "," + specification;
     }
 
 }
