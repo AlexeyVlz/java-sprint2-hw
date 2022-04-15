@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class FileBackedTasksManager extends InMemoryTaskManager implements TaskManager {
-    Path path;
+    private final Path path;
 
     public FileBackedTasksManager(Path path) {
         super();
@@ -143,7 +143,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
             bufferedWriter.write(toString(historyManager));
             bufferedWriter.close();
         } catch (IOException e) {
-            e.getStackTrace();
+            throw new ManagerSaveException("Ошибка сохранения");
         }
     }
 
@@ -154,10 +154,13 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         switch (split[3]) {
             case "NEW":
                 status = Status.NEW;
+                break;
             case "IN_PROGRESS":
                 status = Status.IN_PROGRESS;
+                break;
             case "DONE":
                 status = Status.DONE;
+                break;
         }
         if(split[1].equals(Types.TASK.toString())) {
             Task task = new Task(split[2], status, split[4]);
@@ -241,9 +244,9 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
     public static void main(String[] args) {
             Path data;
         try {
-            data = Files.createFile(Paths.get("C:\\users\\днс\\dev", "data.txt"));
+            data = Files.createFile(Paths.get("data.txt"));
         } catch (IOException e) {
-            data = Paths.get("C:\\users\\днс\\dev", "data.txt");
+            data = Paths.get("data.txt");
             System.out.println("Файл уже существует");
         }
 
@@ -259,7 +262,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
 
         manager.getNewSubtask(new Subtask("Подзадача 1", Status.NEW, "Первая подзадача",
                 epicKeys.get(0)));                                                               // создаем подзадачи
-        manager.getNewSubtask(new Subtask("Подзадача 2", Status.NEW, "Вторая подзадача",
+        manager.getNewSubtask(new Subtask("Подзадача 2", Status.DONE, "Вторая подзадача",
                 epicKeys.get(0)));
         manager.getNewSubtask(new Subtask("Подзадача 3", Status.NEW, "Третья подзадача",
                 epicKeys.get(0)));
