@@ -4,14 +4,21 @@ package controllers;
 import model.*;
 import org.opentest4j.AssertionFailedError;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.TreeSet;
 
 
 public class InMemoryTaskManager implements TaskManager {
     final protected HashMap<Integer, Task> tasks;
     final protected HashMap<Integer, Epic> epics;
     final protected HistoryManager<Records> historyManager;
+    TreeSet<Records> prioritizedTasks;
     int id;
 
     public InMemoryTaskManager() {
@@ -19,6 +26,27 @@ public class InMemoryTaskManager implements TaskManager {
         epics = new HashMap<>();
         historyManager = Managers.getDefaultHistory();
         id = 0;
+        this.prioritizedTasks = new TreeSet<>(new Comparator<Records>() {
+            @Override
+            public int compare(Records o1, Records o2) {
+                ZonedDateTime zeroTime = ZonedDateTime.of(
+                        LocalDateTime.of(0,0,0,0,0,0,0),
+                        ZoneId.of("Europe/Moscow"));
+                if(o1.getStartTime().equals(zeroTime)) {
+                    return 1;
+                }
+                ZonedDateTime time = ZonedDateTime.of(
+                        LocalDateTime.of(2022,0,0,0,0,0,0),
+                        ZoneId.of("Europe/Moscow"));
+                Duration first = Duration.between(time, o1.getStartTime());
+                Duration second = Duration.between(time, o2.getStartTime());
+                return (int) first.toMinutes() - (int) second.toMinutes();
+            }
+        });
+    }
+
+    public TreeSet<Records> getPrioritizedTasks() {
+        return prioritizedTasks;
     }
 
     public HistoryManager<Records> getHistoryManager() {
@@ -47,6 +75,7 @@ public class InMemoryTaskManager implements TaskManager {
         for (Task task : tasks.values()) {
             historyManager.remove(task.getId());
         }
+
         if(!tasks.isEmpty()) {
             tasks.clear();
         }

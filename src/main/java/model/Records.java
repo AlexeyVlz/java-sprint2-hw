@@ -1,21 +1,52 @@
 package model;
 
+import java.time.Duration;
+import java.time.ZonedDateTime;
 import java.util.Objects;
 
 public abstract class Records {
     protected String title;
     protected Status status;
     protected int id;
+    protected String specification;
+    protected Duration duration;
+    protected ZonedDateTime startTime ;
+    protected ZonedDateTime endTime;
 
-    public Records(String title, Status status, int id) {
+    public Records(String title, Status status, int id, String specification, ZonedDateTime startTime,
+                   Duration duration) {
         this.title = title;
         this.status = status;
         this.id = id;
+        this.specification = specification;
+        this.startTime = startTime;
+        this.duration = duration;
+        this.endTime = getEndTime();
+
     }
 
-    public Records(String title, int id) {
+    public Records(String title, int id, String specification) {
         this.title = title;
         this.id = id;
+        this.specification = specification;
+        this.endTime = getEndTime();
+    }
+
+    public String getSpecification() {
+        return specification;
+    }
+
+    public Duration getDuration() {
+        return duration;
+    }
+
+    public ZonedDateTime getStartTime() {
+        return startTime;
+    }
+
+    public ZonedDateTime getEndTime() {
+        this.endTime = startTime.plus(duration);
+        return endTime;
     }
 
     public String getTitle() {

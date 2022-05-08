@@ -1,15 +1,16 @@
 package model;
 
+import java.time.Duration;
+import java.time.ZonedDateTime;
 import java.util.Objects;
 import controllers.Types;
 
 public class Task extends Records {
-    final private String specification;
 
 
-    public Task(String title, Status status, String specification) {
-        super(title, status, 0);
-        this.specification = specification;
+    public Task(String title, Status status, String specification, ZonedDateTime startTime,
+                Duration duration) {
+        super(title, status, 0, specification, startTime, duration);
     }
 
     @Override
