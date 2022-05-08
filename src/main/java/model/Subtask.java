@@ -18,6 +18,8 @@ public class Subtask extends Records {
         return epicId;
     }
 
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -20,17 +20,13 @@ public class Epic extends Records {
         return subtasks;
     }
 
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         Epic epic = (Epic) o;
-        return Objects.equals(subtasks, epic.subtasks);
+        return Objects.equals(toString(), epic.toString());
     }
 
     @Override

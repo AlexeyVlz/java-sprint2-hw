@@ -1,12 +1,14 @@
 package controllers;
 
+import model.Records;
+
 public class Managers {
 
     public static TaskManager getDefault() {
         return new InMemoryTaskManager();
     }
 
-    public static HistoryManager<model.Records> getDefaultHistory() {
+    public static HistoryManager<Records> getDefaultHistory() {
         return new InMemoryHistoryManager<>();
     }
 
