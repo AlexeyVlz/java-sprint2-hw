@@ -1,6 +1,6 @@
 package model;
 
-import controllers.Types;
+import service.Types;
 
 import java.time.Duration;
 import java.time.ZonedDateTime;

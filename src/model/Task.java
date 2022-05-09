@@ -4,7 +4,7 @@ import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
-import controllers.Types;
+import service.Types;
 
 public class Task extends Records {
 

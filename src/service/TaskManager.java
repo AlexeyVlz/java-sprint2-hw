@@ -1,6 +1,5 @@
-package controllers;
+package service;
 
-import controllers.HistoryManager;
 import model.*;
 
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package test;
+package service;
 
 import model.Epic;
 import model.Status;
@@ -8,10 +8,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 
-import controllers.TaskManager;
-import org.junit.jupiter.api.function.Executable;
-import org.opentest4j.AssertionFailedError;
-
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -19,7 +15,7 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-abstract class TaskManagerTest <T extends TaskManager> {
+public abstract class TaskManagerTest <T extends TaskManager> {
     T taskManager;
 
     public TaskManagerTest (T taskManager) {

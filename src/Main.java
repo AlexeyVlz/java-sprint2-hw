@@ -1,18 +1,7 @@
-import controllers.InMemoryTaskManager;
-import controllers.Managers;
-import controllers.TaskManager;
-import model.Status;
-import model.Task;
-
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-
-/*public class Main {
+public class Main {
     public static void main(String[] args) {
 
-       System.out.println("Пришло время практики!");
+       /*System.out.println("Пришло время практики!");
 
         TaskManager manager = Managers.getDefault();
 
@@ -33,7 +22,7 @@ import java.time.ZonedDateTime;
 
 
 
-        /*ArrayList<Integer> taskKeys = new ArrayList<>(manager.getTasks().keySet());// вытаскиваем ключи задач
+        ArrayList<Integer> taskKeys = new ArrayList<>(manager.getTasks().keySet());// вытаскиваем ключи задач
 
         manager.getNewEpic(new Epic("Эпик 1", "Первый")); // создаем эпики
         manager.getNewEpic(new Epic("Эпик 2", "Второй"));
@@ -69,11 +58,11 @@ import java.time.ZonedDateTime;
         System.out.println(manager.getHistoryManager().getHistory());
 
         manager.clearTasksList();
-        System.out.println(manager.getHistoryManager().getHistory());
+        System.out.println(manager.getHistoryManager().getHistory());*/
 
 
     }
 
 
 
-}*/
+}
