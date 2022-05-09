@@ -37,6 +37,7 @@ public class Subtask extends Records {
 
     @Override
     public String toString() {
-        return id + "," + Types.SUBTASK + "," + title + "," + status + "," + specification + "," + epicId;
+        return id + "," + Types.SUBTASK + "," + title + "," + status + "," + specification + "," +
+                startTime + "," + duration + "," + endTime + "," + epicId;
     }
 }

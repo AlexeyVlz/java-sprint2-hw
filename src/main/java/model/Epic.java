@@ -16,9 +16,7 @@ public class Epic extends Records {
     public Epic(String title, String specification) {
         super(title, 0, specification);
         this.subtasks = new HashMap<>();
-        this.startTime = calculateStartTime();
         this.duration = calculateDuration();
-        this.endTime = getEndTime();
     }
 
     public Duration calculateDuration() {
@@ -35,12 +33,9 @@ public class Epic extends Records {
     }
 
     public ZonedDateTime calculateStartTime() {
-        startTime = ZonedDateTime.of(
-                LocalDateTime.of(0,0,0,0,0,0,0),
-                ZoneId.of("Europe/Moscow"));
         if(!subtasks.isEmpty()) {
             startTime = ZonedDateTime.of(
-                    LocalDateTime.of(9999, 0, 0, 0, 0, 0, 0),
+                    LocalDateTime.of(9999, 1, 1, 0, 0, 0, 0),
                     ZoneId.of("Europe/Moscow"));
             for (Subtask subtask : subtasks.values()) {
                 if (subtask.getStartTime().isBefore(startTime)) {
@@ -53,6 +48,16 @@ public class Epic extends Records {
 
     public  void setStartTime() {
         this.startTime = calculateStartTime();
+    }
+
+    @Override
+    public ZonedDateTime getEndTime() {
+        try {
+            ZonedDateTime newEndTime = startTime.plus(duration);
+            return newEndTime;
+        } catch (NullPointerException ex) {
+            return null;
+        }
     }
 
     public HashMap<Integer, Subtask> getSubtasks() {
@@ -75,6 +80,7 @@ public class Epic extends Records {
 
     @Override
     public String toString() {
-        return id + "," + Types.EPIC + "," + title + "," + status + "," + specification;
+        return id + "," + Types.EPIC + "," + title + "," + status + "," + specification +
+                startTime + "," + duration + "," + endTime;
     }
 }

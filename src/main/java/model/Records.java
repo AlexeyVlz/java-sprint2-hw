@@ -10,7 +10,7 @@ public abstract class Records {
     protected int id;
     protected String specification;
     protected Duration duration;
-    protected ZonedDateTime startTime ;
+    protected ZonedDateTime startTime;
     protected ZonedDateTime endTime;
 
     public Records(String title, Status status, int id, String specification, ZonedDateTime startTime,
@@ -29,7 +29,6 @@ public abstract class Records {
         this.title = title;
         this.id = id;
         this.specification = specification;
-        this.endTime = getEndTime();
     }
 
     public String getSpecification() {
@@ -45,8 +44,11 @@ public abstract class Records {
     }
 
     public ZonedDateTime getEndTime() {
-        this.endTime = startTime.plus(duration);
-        return endTime;
+        return startTime.plus(duration);
+    }
+
+    public void setEndTime () {
+        this.endTime = getEndTime();
     }
 
     public String getTitle() {

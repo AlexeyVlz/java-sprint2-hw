@@ -6,6 +6,10 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -14,11 +18,23 @@ public class InMemoryHistoryManagerTests {
 
     InMemoryHistoryManager<Records> inMemoryHistoryManager = new InMemoryHistoryManager<>();
 
-    static Task task = new Task("Задача 1", Status.NEW, "Первая задача");
+    static ZonedDateTime startTimeFirstTask = ZonedDateTime.of(  // Стартовое время первой подзадачи
+            LocalDateTime.of(2022,5,1,9,0,0,0),
+            ZoneId.of("Europe/Moscow"));
+    static ZonedDateTime startTimeFirstSubtask = ZonedDateTime.of(  // Стартовое время второй подзадачи
+            LocalDateTime.of(2022,5,1,11,0,0,0),
+            ZoneId.of("Europe/Moscow"));
+    static ZonedDateTime startTimeSecondSubtask = ZonedDateTime.of(  // Стартовое время второй подзадачи
+            LocalDateTime.of(2022,5,1,15,0,0,0),
+            ZoneId.of("Europe/Moscow"));
+    static Task task = new Task("Задача 1", Status.NEW,"Первая", startTimeFirstTask,
+            Duration.ofMinutes(60));
     static Epic epic1 = new Epic("Эпик 1", "Первый эпик");
     static Epic epic2 = new Epic("Эпик 2", "Второй эпик");
-    static Subtask subtask1 = new Subtask("Подзадача 1", Status.NEW, "Первая подзадача", 3);
-    static Subtask subtask2 = new Subtask("Подзадача 2", Status.IN_PROGRESS, "Вторая подзадача", 3);
+    static Subtask subtask1 = new Subtask("Подзадача 1", Status.NEW, "Первая подзадача", 3,
+            startTimeFirstSubtask, Duration.ofMinutes(60));
+    static Subtask subtask2 = new Subtask("Подзадача 2", Status.IN_PROGRESS, "Вторая подзадача", 3,
+            startTimeSecondSubtask, Duration.ofMinutes(60));
 
     @BeforeAll
     public static void beforeAll() {

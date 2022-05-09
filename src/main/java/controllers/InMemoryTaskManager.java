@@ -29,14 +29,11 @@ public class InMemoryTaskManager implements TaskManager {
         this.prioritizedTasks = new TreeSet<>(new Comparator<Records>() {
             @Override
             public int compare(Records o1, Records o2) {
-                ZonedDateTime zeroTime = ZonedDateTime.of(
-                        LocalDateTime.of(0,0,0,0,0,0,0),
-                        ZoneId.of("Europe/Moscow"));
-                if(o1.getStartTime().equals(zeroTime)) {
+                /*if(o1.getStartTime() == null) {
                     return 1;
-                }
+                }*/
                 ZonedDateTime time = ZonedDateTime.of(
-                        LocalDateTime.of(2022,0,0,0,0,0,0),
+                        LocalDateTime.of(2022,1,1,0,0,0,0),
                         ZoneId.of("Europe/Moscow"));
                 Duration first = Duration.between(time, o1.getStartTime());
                 Duration second = Duration.between(time, o2.getStartTime());
@@ -74,8 +71,8 @@ public class InMemoryTaskManager implements TaskManager {
     public HashMap<Integer, Task> clearTasksList () { // очистка списка задач
         for (Task task : tasks.values()) {
             historyManager.remove(task.getId());
+            prioritizedTasks.remove(task);
         }
-
         if(!tasks.isEmpty()) {
             tasks.clear();
         }
@@ -94,19 +91,52 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public HashMap<Integer, Task> getNewTask (Task task) { // добавление новой задачи
-        try {
+            for (Records record : prioritizedTasks) {
+                if (task.getStartTime().isAfter(record.getStartTime()) &&
+                        task.getStartTime().isBefore(record.getEndTime())) {
+                    System.out.println("Время выполнения задачи пересекается со временем" +
+                            record.getTitle());
+                    throw new ManagerSaveException("Время выполнения задачи пересекается со временем" +
+                            record.getTitle());
+                }
+                if (task.getEndTime().isAfter(record.getStartTime()) &&
+                        task.getEndTime().isBefore(record.getEndTime())) {
+                    System.out.println("Время выполнения задачи пересекается со временем" +
+                            record.getTitle());
+                    throw new ManagerSaveException("Время выполнения задачи пересекается со временем" +
+                            record.getTitle());
+                }
+            }
+
             task.setId(++id);
             tasks.put(id, task);
+            prioritizedTasks.add(task);
             return tasks;
-        } catch (NullPointerException e) {
-            throw new NullPointerException("Данные не получены");
-        }
+
     }
 
     @Override
     public HashMap<Integer, Task> updateTask (Task task) { // обновляем задачу
         if(tasks.containsKey(task.getId())) {
+            for (Records record : prioritizedTasks) {
+                if (task.getStartTime().isAfter(record.getStartTime()) &&
+                        task.getStartTime().isBefore(record.getEndTime())) {
+                    System.out.println("Время выполнения задачи пересекается со временем" +
+                            record.getTitle());
+                    throw new ManagerSaveException("Время выполнения задачи пересекается со временем" +
+                            record.getTitle());
+                }
+                if (task.getEndTime().isAfter(record.getStartTime()) &&
+                        task.getEndTime().isBefore(record.getEndTime())) {
+                    System.out.println("Время выполнения задачи пересекается со временем" +
+                            record.getTitle());
+                    throw new ManagerSaveException("Время выполнения задачи пересекается со временем" +
+                            record.getTitle());
+                }
+            }
             tasks.put(task.getId(), task);
+            prioritizedTasks.remove(task);
+            prioritizedTasks.add(task);
             return tasks;
         } else {
             throw new NullPointerException("Такая задача не создавалась");
@@ -115,9 +145,14 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public HashMap<Integer, Task> removeTask (int identifier) { // удаляем задачу по ID
-        historyManager.remove(identifier);
-        tasks.remove(identifier);
-        return tasks;
+        try {
+            historyManager.remove(identifier);
+            prioritizedTasks.remove(tasks.get(identifier));
+            tasks.remove(identifier);
+            return tasks;
+        }catch (NullPointerException e) {
+            throw new NullPointerException("Такой задачи не найдено");
+        }
     }
 
     @Override
@@ -138,10 +173,14 @@ public class InMemoryTaskManager implements TaskManager {
         try {
             for (Subtask subtask : epics.get(identifier).getSubtasks().values()) {
                 historyManager.remove(subtask.getId());
+                prioritizedTasks.remove(subtask);
             }
             epics.get(identifier).getSubtasks().clear();
             Status newStatus = calculateStatus(identifier);
             epics.get(identifier).setStatus(newStatus);
+            epics.get(identifier).setDuration();
+            epics.get(identifier).setStartTime();
+            epics.get(identifier).setEndTime();
             return epics.get(identifier);
         } catch (NullPointerException e) {
             throw new NullPointerException("Эпик не найден");
@@ -160,11 +199,31 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public HashMap<Integer, Epic> getNewSubtask (Subtask subtask) { // создаем подзадачи
+        for (Records record : prioritizedTasks) {
+            if (subtask.getStartTime().isAfter(record.getStartTime()) &&
+                    subtask.getStartTime().isBefore(record.getEndTime())) {
+                System.out.println("Время выполнения задачи пересекается со временем" +
+                        record.getTitle());
+                throw new ManagerSaveException("Время выполнения задачи пересекается со временем" +
+                        record.getTitle());
+            }
+            if (subtask.getEndTime().isAfter(record.getStartTime()) &&
+                    subtask.getEndTime().isBefore(record.getEndTime())) {
+                System.out.println("Время выполнения задачи пересекается со временем" +
+                        record.getTitle());
+                throw new ManagerSaveException("Время выполнения задачи пересекается со временем" +
+                        record.getTitle());
+            }
+        }
         try {
             subtask.setId(++id);
             epics.get(subtask.getEpicId()).getSubtasks().put(id, subtask);
             Status newStatus = calculateStatus(subtask.getEpicId());
             epics.get(subtask.getEpicId()).setStatus(newStatus);
+            prioritizedTasks.add(subtask);
+            epics.get(subtask.getEpicId()).setDuration();
+            epics.get(subtask.getEpicId()).setStartTime();
+            epics.get(subtask.getEpicId()).setEndTime();
             return epics;
         } catch (NullPointerException e) {
             throw new NullPointerException("Объект не найден");
@@ -173,6 +232,22 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public HashMap<Integer, Epic> updateSubtask (Subtask subtask) { //обновление подзадач
+        for (Records record : prioritizedTasks) {
+            if (subtask.getStartTime().isAfter(record.getStartTime()) &&
+                    subtask.getStartTime().isBefore(record.getEndTime())) {
+                System.out.println("Время выполнения задачи пересекается со временем" +
+                        record.getTitle());
+                throw new ManagerSaveException("Время выполнения задачи пересекается со временем" +
+                        record.getTitle());
+            }
+            if (subtask.getEndTime().isAfter(record.getStartTime()) &&
+                    subtask.getEndTime().isBefore(record.getEndTime())) {
+                System.out.println("Время выполнения задачи пересекается со временем" +
+                        record.getTitle());
+                throw new ManagerSaveException("Время выполнения задачи пересекается со временем" +
+                        record.getTitle());
+            }
+        }
         try {
             if (!epics.get(subtask.getEpicId()).getSubtasks().containsKey(subtask.getId())) {
                 throw new NullPointerException("Объект не найден");
@@ -180,6 +255,11 @@ public class InMemoryTaskManager implements TaskManager {
             epics.get(subtask.getEpicId()).getSubtasks().put(subtask.getId(), subtask);
             Status newStatus = calculateStatus(subtask.getEpicId());
             epics.get(subtask.getEpicId()).setStatus(newStatus);
+            prioritizedTasks.remove(subtask);
+            prioritizedTasks.add(subtask);
+            epics.get(subtask.getEpicId()).setDuration();
+            epics.get(subtask.getEpicId()).setStartTime();
+            epics.get(subtask.getEpicId()).setEndTime();
             return epics;
         } catch (NullPointerException e) {
             throw new NullPointerException("Объект не найден");
@@ -189,10 +269,14 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public HashMap<Integer, Subtask> removeSubtaskById (int epicId, int subtaskId) { //удаление по ID
         try {
+            prioritizedTasks.remove(epics.get(epicId).getSubtasks().get(subtaskId));
             epics.get(epicId).getSubtasks().remove(subtaskId);
             Status newStatus = calculateStatus(epicId);
             epics.get(epicId).setStatus(newStatus);
             historyManager.remove(subtaskId);
+            epics.get(epicId).setDuration();
+            epics.get(epicId).setStartTime();
+            epics.get(epicId).setEndTime();
             return epics.get(epicId).getSubtasks();
         } catch (NullPointerException e) {
             throw new NullPointerException("Объект не найден");

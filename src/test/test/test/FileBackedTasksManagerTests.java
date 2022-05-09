@@ -1,6 +1,6 @@
 package test;
 
-import controllers.FileBackedTasksManager;
+//import controllers.FileBackedTasksManager;
 import controllers.InMemoryTaskManager;
 import controllers.ManagerSaveException;
 import model.*;
@@ -17,7 +17,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FileBackedTasksManagerTests extends TaskManagerTest<FileBackedTasksManager>{
+/*public class FileBackedTasksManagerTests extends TaskManagerTest<FileBackedTasksManager>{
 
     FileBackedTasksManager taskManager;
 
@@ -140,4 +140,4 @@ public class FileBackedTasksManagerTests extends TaskManagerTest<FileBackedTasks
         Assertions.assertEquals(shouldBeHistory, manager.getHistoryManager().getHistory());
     }
 
-}
+}*/

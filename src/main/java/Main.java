@@ -1,3 +1,14 @@
+import controllers.InMemoryTaskManager;
+import controllers.Managers;
+import controllers.TaskManager;
+import model.Status;
+import model.Task;
+
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+
 /*public class Main {
     public static void main(String[] args) {
 
@@ -5,11 +16,24 @@
 
         TaskManager manager = Managers.getDefault();
 
+        ZonedDateTime startTimeFirstTask = ZonedDateTime.of(  // Стартовое время первой задачи
+                LocalDateTime.of(2022,5,1,9,0,0,0),
+                ZoneId.of("Europe/Moscow")); // Стартовое время второй задачи
+        ZonedDateTime startTimeSecondTask = ZonedDateTime.of(
+                LocalDateTime.of(2022,5,1,11,0,0,0),
+                ZoneId.of("Europe/Moscow"));
 
-        manager.getNewTask(new Task("Задача1", Status.NEW, "Первая")); // создаем задачи
-        manager.getNewTask(new Task("Задача2", Status.NEW, "Вторая"));
+        manager.getNewTask(new Task("Задача1", Status.NEW, "Первая",
+                startTimeFirstTask, Duration.ofMinutes(60))); // создаем задачи
 
-        ArrayList<Integer> taskKeys = new ArrayList<>(manager.getTasks().keySet());// вытаскиваем ключи задач
+        manager.getNewTask(new Task("Задача2", Status.NEW, "Вторая",
+                startTimeSecondTask, Duration.ofMinutes(60)));
+
+        System.out.println(manager.getPrioritizedTasks());
+
+
+
+        /*ArrayList<Integer> taskKeys = new ArrayList<>(manager.getTasks().keySet());// вытаскиваем ключи задач
 
         manager.getNewEpic(new Epic("Эпик 1", "Первый")); // создаем эпики
         manager.getNewEpic(new Epic("Эпик 2", "Второй"));

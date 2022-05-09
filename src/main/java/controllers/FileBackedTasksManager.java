@@ -129,7 +129,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
 
 
     public void save () { // сохранение задач в файл
-        final String tableNames = "id,type,name,status,description,epic";
+        final String tableNames = "id,type,name,status,description,startTime,duration,endTime,epic";
         try (Writer fileWriter = new FileWriter(path.getFileName().toString())) {
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
             bufferedWriter.write(tableNames + "\n");
@@ -259,56 +259,5 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
 
 
 
-    /*public static void main(String[] args) {
-            Path data;
-        try {
-            data = Files.createFile(Paths.get("data.txt"));
-        } catch (IOException e) {
-            data = Paths.get("data.txt");
-            System.out.println("Файл уже существует");
-        }
 
-        FileBackedTasksManager manager =  FileBackedTasksManager.loadFromFile(data);
-
-        manager.getNewTask(new Task("Задача1", Status.NEW, "Первая")); // создаем задачи
-        manager.getNewTask(new Task("Задача2", Status.NEW, "Вторая"));
-        ArrayList<Integer> taskKeys = new ArrayList<>(manager.getTasks().keySet());// вытаскиваем ключи задач
-
-        manager.getNewEpic(new Epic("Эпик 1", "Первый")); // создаем эпики
-        manager.getNewEpic(new Epic("Эпик 2", "Второй"));
-        ArrayList<Integer> epicKeys = new ArrayList<>(manager.getEpics().keySet()); // вытаскиваем ключи эпиков
-
-        manager.getNewSubtask(new Subtask("Подзадача 1", Status.NEW, "Первая подзадача",
-                epicKeys.get(0)));                                                               // создаем подзадачи
-        manager.getNewSubtask(new Subtask("Подзадача 2", Status.DONE, "Вторая подзадача",
-                epicKeys.get(0)));
-        manager.getNewSubtask(new Subtask("Подзадача 3", Status.NEW, "Третья подзадача",
-                epicKeys.get(0)));
-        ArrayList<Integer> subtaskKeysFirstEpic = new ArrayList<>(manager.getEpics().get(epicKeys.get(0)).getSubtasks().
-                keySet()); // вытащил ключи подзадач 1 эпика для аргументов
-
-        manager.getSubtaskById(epicKeys.get(0), subtaskKeysFirstEpic.get(0)); // проверяем работу истории.
-        manager.getTaskById(taskKeys.get(0));
-        manager.getTaskById(taskKeys.get(1));
-        manager.getEpicById(epicKeys.get(1));
-        manager.getSubtaskById(epicKeys.get(0), subtaskKeysFirstEpic.get(1));
-
-        manager.removeTask(1);
-        manager.getSubtaskById(epicKeys.get(0), subtaskKeysFirstEpic.get(2));
-
-        try {
-            FileReader reader = new FileReader(manager.path.getFileName().toString());
-            BufferedReader br = new BufferedReader(reader);
-            while (br.ready()) {
-                String line = br.readLine();
-                System.out.println(line);
-            }
-            br.close();
-        } catch (FileNotFoundException e) {
-            System.out.println("Файл не найден");
-        } catch (IOException e) {
-            e.getStackTrace();
-        }
-
-    }*/
 }

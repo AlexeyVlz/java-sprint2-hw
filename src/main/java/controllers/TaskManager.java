@@ -1,16 +1,16 @@
 package controllers;
 
 import controllers.HistoryManager;
-import model.Epic;
-import model.Status;
-import model.Subtask;
-import model.Task;
+import model.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.TreeSet;
 
 
 public interface TaskManager {
+
+    public TreeSet<Records> getPrioritizedTasks();
 
     HistoryManager getHistoryManager();
 
