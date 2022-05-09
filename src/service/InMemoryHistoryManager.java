@@ -1,10 +1,10 @@
-package controllers;
+package service;
 
 import model.Records;
 
 import java.util.*;
 
-public class InMemoryHistoryManager <T extends Records> implements HistoryManager <T>  {
+public class InMemoryHistoryManager <T extends Records> implements HistoryManager<T> {
 
     final private List<T> history;
     final private Map<Integer, Node<T>> links;
@@ -35,12 +35,12 @@ public class InMemoryHistoryManager <T extends Records> implements HistoryManage
         return history;
     }
 
-    public void linkLast (T task) {
+    private void linkLast (T task) {
         if(links.containsKey(task.getId())) {
             removeNode(links.get(task.getId()));
         }
         if (head == null) {
-            head = new Node<T>(task);
+            head = new Node<>(task);
             links.put(task.getId(), head);
         } else if (tail == null) {
             tail = new Node<>(task, head);
@@ -54,7 +54,7 @@ public class InMemoryHistoryManager <T extends Records> implements HistoryManage
         }
     }
 
-    public void getTasks () {
+    private void getTasks () {
         Node<T> node = head;
         while (node != null){
             history.add(node.getValue());
@@ -62,7 +62,7 @@ public class InMemoryHistoryManager <T extends Records> implements HistoryManage
         }
     }
 
-    public void removeNode (Node<T> node) {
+    private void removeNode (Node<T> node) {
         if(node.getPrev() == null) {
             head = head.getNext();
             head.setPrev(null);

@@ -1,15 +1,17 @@
 package model;
 
+import java.time.Duration;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
-import controllers.Types;
+import service.Types;
 
 public class Task extends Records {
-    final private String specification;
 
 
-    public Task(String title, Status status, String specification) {
-        super(title, status, 0);
-        this.specification = specification;
+    public Task(String title, Status status, String specification, ZonedDateTime startTime,
+                Duration duration) {
+        super(title, status, 0, specification, startTime, duration);
     }
 
     @Override
@@ -18,17 +20,19 @@ public class Task extends Records {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         Task task = (Task) o;
-        return Objects.equals(specification, task.specification);
+        return Objects.equals(toString(), task.toString());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), specification);
+        return Objects.hash(super.hashCode(), toString());
     }
 
     @Override
     public String toString() {
-        return id + "," + Types.TASK + "," + title + "," + status + "," + specification;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy;MM;dd;HH;mm;ss");
+        return id + "," + Types.TASK + "," + title + "," + status + "," + specification + "," +
+                formatter.format(startTime) + "," + (int) duration.toMinutes();
     }
 
 }

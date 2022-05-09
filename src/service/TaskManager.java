@@ -1,20 +1,21 @@
-package controllers;
+package service;
 
-import model.Epic;
-import model.Subtask;
-import model.Task;
+import model.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.TreeSet;
 
 
 public interface TaskManager {
 
-    public HistoryManager getHistoryManager();
+    public TreeSet<Records> getPrioritizedTasks();
 
-    public HashMap<Integer, Task> getTasks();
+    HistoryManager getHistoryManager();
 
-    public HashMap<Integer, Epic> getEpics();
+    HashMap<Integer, Task> getTasks();
+
+    HashMap<Integer, Epic> getEpics();
 
     ArrayList<Task> getTasksList(); // получаем список задач
 
@@ -36,7 +37,7 @@ public interface TaskManager {
 
     HashMap<Integer, Epic> getNewSubtask(Subtask subtask); // создаем подзадачи
 
-    HashMap<Integer, Epic> updateSubtask(int SubtaskId, Subtask subtask); //обновление подзадач
+    HashMap<Integer, Epic> updateSubtask(Subtask subtask); //обновление подзадач
 
     HashMap<Integer, Subtask> removeSubtaskById(int epicId, int subtaskId); //удаление по ID
 
@@ -48,9 +49,11 @@ public interface TaskManager {
 
     HashMap<Integer, Epic> getNewEpic(Epic epic); // добавление нового эпика
 
-    HashMap<Integer, Epic> updateEpic(Epic epic, int identifier); // обновляем эпик
+    HashMap<Integer, Epic> updateEpic(Epic epic); // обновляем эпик
 
     HashMap<Integer, Epic> removeEpic(int identifier); // удаляем эпик по ID
+
+    Status calculateStatus (int epicId); // расчет статуса
 
 }
 

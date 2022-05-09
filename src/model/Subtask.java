@@ -1,22 +1,26 @@
 package model;
 
-import controllers.Types;
+import service.Types;
 
+import java.time.Duration;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class Subtask extends Records {
     int epicId;
-    final private String specification;
 
-    public Subtask(String title, Status status, String specification, int epicId) {
-        super(title, status, 0);
+    public Subtask(String title, Status status, String specification, int epicId, ZonedDateTime startTime,
+                   Duration duration) {
+        super(title, status, 0, specification, startTime, duration);
         this.epicId = epicId;
-        this.specification = specification;
     }
 
     public int getEpicId() {
         return epicId;
     }
+
+
 
     @Override
     public boolean equals(Object o) {
@@ -34,6 +38,8 @@ public class Subtask extends Records {
 
     @Override
     public String toString() {
-        return id + "," + Types.SUBTASK + "," + title + "," + status + "," + specification + "," + epicId;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy;MM;dd;HH;mm;ss");
+        return id + "," + Types.SUBTASK + "," + title + "," + status + "," + specification + "," +
+                formatter.format(startTime) + "," + (int) duration.toMinutes() + "," + epicId;
     }
 }
