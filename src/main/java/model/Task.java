@@ -2,6 +2,7 @@ package model;
 
 import java.time.Duration;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 import controllers.Types;
 
@@ -29,8 +30,9 @@ public class Task extends Records {
 
     @Override
     public String toString() {
-        return id + "," + Types.TASK + "," + title + "," + status + "," + specification +
-                startTime + "," + duration + "," + endTime;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy;MM;dd;HH;mm;ss");
+        return id + "," + Types.TASK + "," + title + "," + status + "," + specification + "," +
+                formatter.format(startTime) + "," + (int) duration.toMinutes();
     }
 
 }

@@ -42,6 +42,10 @@ public class InMemoryTaskManager implements TaskManager {
         });
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public TreeSet<Records> getPrioritizedTasks() {
         return prioritizedTasks;
     }

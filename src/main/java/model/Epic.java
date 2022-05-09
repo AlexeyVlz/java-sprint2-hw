@@ -6,6 +6,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -53,11 +54,14 @@ public class Epic extends Records {
     @Override
     public ZonedDateTime getEndTime() {
         try {
-            ZonedDateTime newEndTime = startTime.plus(duration);
-            return newEndTime;
+            return startTime.plus(duration);
         } catch (NullPointerException ex) {
             return null;
         }
+    }
+
+    public  void setEndTime() {
+        this.endTime = getEndTime();
     }
 
     public HashMap<Integer, Subtask> getSubtasks() {
@@ -80,7 +84,14 @@ public class Epic extends Records {
 
     @Override
     public String toString() {
-        return id + "," + Types.EPIC + "," + title + "," + status + "," + specification +
-                startTime + "," + duration + "," + endTime;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy;MM;dd;HH;mm;ss");
+        String stringStartTime;
+        if(startTime != null){
+            stringStartTime = formatter.format(startTime);
+        } else {
+            stringStartTime = "null";
+        }
+        return id + "," + Types.EPIC + "," + title + "," + status + "," + specification + "," +
+                stringStartTime + "," + (int) duration.toMinutes();
     }
 }

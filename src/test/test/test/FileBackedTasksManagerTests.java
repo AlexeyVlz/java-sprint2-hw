@@ -1,6 +1,7 @@
 package test;
 
 //import controllers.FileBackedTasksManager;
+import controllers.FileBackedTasksManager;
 import controllers.InMemoryTaskManager;
 import controllers.ManagerSaveException;
 import model.*;
@@ -14,10 +15,14 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-/*public class FileBackedTasksManagerTests extends TaskManagerTest<FileBackedTasksManager>{
+public class FileBackedTasksManagerTests extends TaskManagerTest<FileBackedTasksManager> {
 
     FileBackedTasksManager taskManager;
 
@@ -28,10 +33,14 @@ import java.util.List;
     @Test
     public void shouldSave() {
         taskManager = new FileBackedTasksManager(Paths.get("test.txt"));
-        taskManager.getNewTask(new Task("Задача 1", Status.NEW, "Первая задача"));
+        ZonedDateTime startTimeFirstTask = ZonedDateTime.of(  // Стартовое время первой задачи
+                LocalDateTime.of(2022, 5, 1, 9, 0, 0, 0),
+                ZoneId.of("Europe/Moscow"));
+        taskManager.getNewTask(new Task("Задача 1", Status.NEW, "Первая задача", startTimeFirstTask,
+                Duration.ofMinutes(60)));
         List<String> expected = new ArrayList<>();
-        expected.add("id,type,name,status,description,epic");
-        expected.add("1,TASK,Задача 1,NEW,Первая задача");
+        expected.add("id,type,name,status,description,startTime,duration,epic");
+        expected.add("1,TASK,Задача 1,NEW,Первая задача,2022;05;01;09;00;00,60");
         expected.add("");
         List<String> saved = new ArrayList<>();
         try (FileReader reader = new FileReader(taskManager.getPath().getFileName().toString())) {
@@ -47,7 +56,7 @@ import java.util.List;
 
         taskManager.getNewEpic(new Epic("Эпик 1", "Первый Эпик"));
         taskManager.getEpics().get(2).setStatus(Status.NEW);
-        expected.add(expected.size() - 1, "2,EPIC,Эпик 1,NEW,Первый Эпик");
+        expected.add(expected.size() - 1, "2,EPIC,Эпик 1,NEW,Первый Эпик,null,0");
         saved.clear();
         try (FileReader reader = new FileReader(taskManager.getPath().getFileName().toString())) {
             BufferedReader br = new BufferedReader(reader);
@@ -60,8 +69,15 @@ import java.util.List;
         }
         Assertions.assertEquals(expected, saved);
 
-        taskManager.getNewSubtask(new Subtask("Подзадача 1", Status.NEW, "Первая подзадача", 2));
-        expected.add(expected.size() - 1, "3,SUBTASK,Подзадача 1,NEW,Первая подзадача,2");
+        ZonedDateTime startTimeFirstSubtask = ZonedDateTime.of(  // Стартовое время первой подзадачи
+                LocalDateTime.of(2022, 5, 1, 15, 0, 0, 0),
+                ZoneId.of("Europe/Moscow"));
+        taskManager.getNewSubtask(new Subtask("Подзадача 1", Status.NEW, "Первая подзадача", 2,
+                startTimeFirstSubtask, Duration.ofMinutes(60)));
+        expected.remove(expected.size() - 2);
+        expected.add(expected.size() - 1, "2,EPIC,Эпик 1,NEW,Первый Эпик,2022;05;01;15;00;00,60");
+        expected.add(expected.size() - 1, "3,SUBTASK,Подзадача 1,NEW,Первая подзадача," +
+                "2022;05;01;15;00;00,60,2");
         saved.clear();
         try (FileReader reader = new FileReader(taskManager.getPath().getFileName().toString())) {
             BufferedReader br = new BufferedReader(reader);
@@ -123,13 +139,22 @@ import java.util.List;
         Assertions.assertEquals("Нет данных для определения типа объекта", ex2.getMessage());
 
         taskManager = new FileBackedTasksManager(Paths.get("test.txt"));
-        FileBackedTasksManager manager = taskManager.loadFromFile (Paths.get(taskManager.getPath().getFileName().toString()));
+        FileBackedTasksManager manager = taskManager.loadFromFile (Paths.get(taskManager.getPath().
+                getFileName().toString()));
 
         Epic epic = new Epic("Эпик 1", "Первый Эпик");
         epic.setStatus(Status.NEW);
         epic.setId(2);
-        Subtask subtask = new Subtask("Подзадача 1", Status.NEW, "Первая подзадача", 2);
+        ZonedDateTime startTimeFirstSubtask = ZonedDateTime.of(  // Стартовое время первой подзадачи
+                LocalDateTime.of(2022, 5, 1, 15, 0, 0, 0),
+                ZoneId.of("Europe/Moscow"));
+        Subtask subtask = new Subtask("Подзадача 1", Status.NEW, "Первая подзадача", 2,
+                startTimeFirstSubtask, Duration.ofMinutes(60));
         subtask.setId(3);
+        epic.getSubtasks().put(subtask.getId(), subtask);
+        epic.setStartTime();
+        epic.setDuration();
+        epic.setEndTime();
 
         Assertions.assertEquals(subtask, manager.getEpics().get(2).getSubtasks().get(3));
         Assertions.assertEquals(epic, manager.getEpics().get(2));
@@ -140,4 +165,4 @@ import java.util.List;
         Assertions.assertEquals(shouldBeHistory, manager.getHistoryManager().getHistory());
     }
 
-}*/
+}

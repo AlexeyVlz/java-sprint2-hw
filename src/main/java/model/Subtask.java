@@ -4,6 +4,7 @@ import controllers.Types;
 
 import java.time.Duration;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class Subtask extends Records {
@@ -37,7 +38,8 @@ public class Subtask extends Records {
 
     @Override
     public String toString() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy;MM;dd;HH;mm;ss");
         return id + "," + Types.SUBTASK + "," + title + "," + status + "," + specification + "," +
-                startTime + "," + duration + "," + endTime + "," + epicId;
+                formatter.format(startTime) + "," + (int) duration.toMinutes() + "," + epicId;
     }
 }
