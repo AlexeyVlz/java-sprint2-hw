@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class FileBackedTasksManager extends InMemoryTaskManager implements TaskManager {
+public class FileBackedTasksManager extends InMemoryTaskManager {
     private final Path path;
 
     public FileBackedTasksManager(Path path) {
@@ -154,14 +154,14 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         }
     }
 
-    public FileBackedTasksManager loadFromFile(Path path) {
+    static public FileBackedTasksManager loadFromFile(Path path) {
         FileBackedTasksManager manager = new FileBackedTasksManager(path);
         try (FileReader reader = new FileReader(path.getFileName().toString())) {
             BufferedReader br = new BufferedReader(reader);
             while (br.ready()) {
                 String line = br.readLine();
                 if(!line.isBlank()) {
-                    Records record = manager.fromString(line);
+                    Records record = fromString(line);
                     if(record != null) {
                         if (record instanceof Task) {
                             Task task = (Task) record;
@@ -223,7 +223,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         return manager;
     }
 
-    private Records fromString(String value) { // создание задачи из строки
+    static private Records fromString(String value) { // создание задачи из строки
         Status status;
         try {
             String[] split = value.split(",");
@@ -289,7 +289,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         return String.join(",", history);
     }
 
-    private List<Integer> fromStringToList(String value) {
+    static private List<Integer> fromStringToList(String value) {
         List<Integer> history = new ArrayList<>();
         String[] values = value.split(",");
         for (String id : values) {

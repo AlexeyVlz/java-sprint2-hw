@@ -1,5 +1,6 @@
 package service;
 
+import org.junit.jupiter.api.BeforeEach;
 import service.FileBackedTasksManager;
 import exceptions.ManagerSaveException;
 import model.*;
@@ -120,21 +121,21 @@ public class FileBackedTasksManagerTests extends TaskManagerTest<FileBackedTasks
     public void shouldLoadFromFile() {
         taskManager = new FileBackedTasksManager(Paths.get("noStatus.txt"));
         ManagerSaveException ex = Assertions.assertThrows(ManagerSaveException.class,
-                () -> taskManager.loadFromFile (Paths.get(taskManager.getPath().getFileName().toString())));
+                () -> FileBackedTasksManager.loadFromFile (Paths.get(taskManager.getPath().getFileName().toString())));
         Assertions.assertEquals("Нет данных для восстановления статуса объекта", ex.getMessage());
 
         taskManager = new FileBackedTasksManager(Paths.get("lackOfData.txt"));
         ArrayIndexOutOfBoundsException ex1 = Assertions.assertThrows(ArrayIndexOutOfBoundsException.class,
-                () -> taskManager.loadFromFile (Paths.get(taskManager.getPath().getFileName().toString())));
+                () -> FileBackedTasksManager.loadFromFile (Paths.get(taskManager.getPath().getFileName().toString())));
         Assertions.assertEquals("Недостаточно данных для восстановления объекта", ex1.getMessage());
 
         taskManager = new FileBackedTasksManager(Paths.get("noType.txt"));
         ManagerSaveException ex2 = Assertions.assertThrows(ManagerSaveException.class,
-                () -> taskManager.loadFromFile (Paths.get(taskManager.getPath().getFileName().toString())));
+                () -> FileBackedTasksManager.loadFromFile (Paths.get(taskManager.getPath().getFileName().toString())));
         Assertions.assertEquals("Нет данных для определения типа объекта", ex2.getMessage());
 
         taskManager = new FileBackedTasksManager(Paths.get("test.txt"));
-        FileBackedTasksManager manager = taskManager.loadFromFile (Paths.get(taskManager.getPath().
+        FileBackedTasksManager manager = FileBackedTasksManager.loadFromFile (Paths.get(taskManager.getPath().
                 getFileName().toString()));
 
         Epic epic = new Epic("Эпик 1", "Первый Эпик");

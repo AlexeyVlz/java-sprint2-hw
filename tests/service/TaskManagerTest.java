@@ -5,6 +5,7 @@ import model.Status;
 import model.Subtask;
 import model.Task;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 
@@ -17,49 +18,31 @@ import java.util.List;
 
 public abstract class TaskManagerTest <T extends TaskManager> {
     T taskManager;
+    ObjectsForTests objectsForTests;
 
     public TaskManagerTest (T taskManager) {
         this.taskManager = taskManager;
+        this.objectsForTests = new ObjectsForTests();
     }
 
     @Test
     public void shouldGiveTasksList() {
         Assertions.assertTrue(taskManager.getTasksList().isEmpty());
 
-        ZonedDateTime startTimeFirstTask = ZonedDateTime.of(  // Стартовое время первой задачи
-                LocalDateTime.of(2022,5,1,9,0,0,0),
-                ZoneId.of("Europe/Moscow")); // Стартовое время второй задачи
-        ZonedDateTime startTimeSecondTask = ZonedDateTime.of(
-                LocalDateTime.of(2022,5,1,11,0,0,0),
-                ZoneId.of("Europe/Moscow"));
-
         List<Task> newTasks = new ArrayList<>();
-        newTasks.add(new Task("Задача 1", Status.NEW,"Первая", startTimeFirstTask,
-                Duration.ofMinutes(60)));
-        newTasks.add(new Task("Задача 2", Status.NEW, "Вторая", startTimeSecondTask,
-                Duration.ofMinutes(60)));
+        newTasks.add(objectsForTests.firstTask());
+        newTasks.add(objectsForTests.secondTask());
         newTasks.get(0).setId(1);
         newTasks.get(1).setId(2);
-        taskManager.getNewTask(new Task("Задача 1", Status.NEW, "Первая", startTimeFirstTask,
-                Duration.ofMinutes(60)));
-        taskManager.getNewTask(new Task("Задача 2", Status.NEW, "Вторая", startTimeSecondTask,
-                Duration.ofMinutes(60)));
+        taskManager.getNewTask(objectsForTests.firstTask());
+        taskManager.getNewTask(objectsForTests.secondTask());
         Assertions.assertEquals(newTasks, taskManager.getTasksList(), "Списки не совпадают");
     }
 
     @Test
     public void tasksShouldBeEmpty() {
-        ZonedDateTime startTimeFirstTask = ZonedDateTime.of(  // Стартовое время первой задачи
-                LocalDateTime.of(2022,5,1,9,0,0,0),
-                ZoneId.of("Europe/Moscow"));
-        ZonedDateTime startTimeSecondTask = ZonedDateTime.of( // Стартовое время второй задачи
-                LocalDateTime.of(2022,5,1,11,0,0,0),
-                ZoneId.of("Europe/Moscow"));
-        taskManager.getNewTask(new Task("Задача 1", Status.NEW, "Первая", startTimeFirstTask,
-                Duration.ofMinutes(60)));
-        taskManager.getNewTask(new Task("Задача 2", Status.NEW, "Вторая", startTimeSecondTask,
-                Duration.ofMinutes(60)));
-
+        taskManager.getNewTask(objectsForTests.firstTask());
+        taskManager.getNewTask(objectsForTests.secondTask());
         boolean isEmpty = taskManager.clearTasksList().isEmpty();
         Assertions.assertTrue(isEmpty);
     }
@@ -70,58 +53,30 @@ public abstract class TaskManagerTest <T extends TaskManager> {
                 () -> taskManager.getTaskById (777));
         Assertions.assertEquals("Задача не найдена", ex.getMessage());
 
-        ZonedDateTime startTimeFirstTask = ZonedDateTime.of(  // Стартовое время первой задачи
-                LocalDateTime.of(2022,5,1,9,0,0,0),
-                ZoneId.of("Europe/Moscow"));
-        ZonedDateTime startTimeSecondTask = ZonedDateTime.of(  // Стартовое время второй задачи
-                LocalDateTime.of(2022,5,1,11,0,0,0),
-                ZoneId.of("Europe/Moscow"));
-
-
-        Task task = new Task("Задача 1", Status.NEW,"Первая", startTimeFirstTask,
-                Duration.ofMinutes(60));
-        Task task1 = new Task("Задача 2", Status.NEW, "Вторая", startTimeSecondTask,
-                Duration.ofMinutes(60));
+        Task task = objectsForTests.firstTask();
+        Task task1 = objectsForTests.secondTask();
         task.setId(1);
         task1.setId(2);
-        taskManager.getNewTask(new Task("Задача 1", Status.NEW,"Первая", startTimeFirstTask,
-                Duration.ofMinutes(60)));
-        taskManager.getNewTask(new Task("Задача 2", Status.NEW, "Вторая", startTimeSecondTask,
-                Duration.ofMinutes(60)));
+        taskManager.getNewTask(objectsForTests.firstTask());
+        taskManager.getNewTask(objectsForTests.secondTask());
         Assertions.assertEquals(task, taskManager.getTaskById(1));
         Assertions.assertEquals(task1, taskManager.getTaskById(2));
     }
 
     @Test
     public void shouldCreateNewTask() {
-
-        ZonedDateTime startTimeFirstTask = ZonedDateTime.of(  // Стартовое время первой задачи
-                LocalDateTime.of(2022,5,1,9,0,0,0),
-                ZoneId.of("Europe/Moscow"));
-
-        Task task = new Task("Задача 1", Status.NEW,"Первая", startTimeFirstTask,
-                Duration.ofMinutes(60));
+        Task task = objectsForTests.firstTask();
         task.setId(1);
-        taskManager.getNewTask(new Task("Задача 1", Status.NEW,"Первая", startTimeFirstTask,
-                Duration.ofMinutes(60)));
+        taskManager.getNewTask(objectsForTests.firstTask());
         Assertions.assertEquals(task, taskManager.getTasks().get(1));
     }
 
     @Test
     public void shouldUpdateTask() {
-        ZonedDateTime startTimeFirstTask = ZonedDateTime.of(  // Стартовое время первой задачи
-                LocalDateTime.of(2022,5,1,9,0,0,0),
-                ZoneId.of("Europe/Moscow"));
-        ZonedDateTime startTimeSecondTask = ZonedDateTime.of(  // Стартовое время второй задачи
-                LocalDateTime.of(2022,5,1,11,0,0,0),
-                ZoneId.of("Europe/Moscow"));
-        taskManager.getNewTask(new Task("Задача 1", Status.NEW,"Первая", startTimeFirstTask,
-                Duration.ofMinutes(60)));
-        Task task = new Task("Задача 1", Status.NEW,"Первая", startTimeFirstTask,
-                Duration.ofMinutes(60));
+        taskManager.getNewTask(objectsForTests.firstTask());
+        Task task = objectsForTests.firstTask();
         task.setId(1);
-        Task task2 = new Task("Задача 2", Status.NEW, "Вторая", startTimeSecondTask,
-                Duration.ofMinutes(60));
+        Task task2 = objectsForTests.secondTask();
         task2.setId(2);
         NullPointerException ex = Assertions.assertThrows(NullPointerException.class,
                 () -> taskManager.updateTask(task2));
@@ -131,16 +86,8 @@ public abstract class TaskManagerTest <T extends TaskManager> {
 
     @Test
     public void shouldRemoveTask() {
-        ZonedDateTime startTimeFirstTask = ZonedDateTime.of(  // Стартовое время первой задачи
-                LocalDateTime.of(2022,5,1,9,0,0,0),
-                ZoneId.of("Europe/Moscow"));
-        ZonedDateTime startTimeSecondTask = ZonedDateTime.of(  // Стартовое время второй задачи
-                LocalDateTime.of(2022,5,1,11,0,0,0),
-                ZoneId.of("Europe/Moscow"));
-        taskManager.getNewTask(new Task("Задача 1", Status.NEW,"Первая", startTimeFirstTask,
-                Duration.ofMinutes(60)));
-        taskManager.getNewTask(new Task("Задача 2", Status.NEW, "Вторая", startTimeSecondTask,
-                Duration.ofMinutes(60)));
+        taskManager.getNewTask(objectsForTests.firstTask());
+        taskManager.getNewTask(objectsForTests.secondTask());
         taskManager.removeTask(1);
         Assertions.assertFalse(taskManager.getTasks().containsValue(taskManager.getTasks().get(1)));
     }
@@ -151,27 +98,17 @@ public abstract class TaskManagerTest <T extends TaskManager> {
                 () -> taskManager.getSubtaskList(777));
         Assertions.assertEquals("Эпик не найден", ex.getMessage());
 
-        ZonedDateTime startTimeFirstTask = ZonedDateTime.of(  // Стартовое время первой подзадачи
-                LocalDateTime.of(2022,5,1,9,0,0,0),
-                ZoneId.of("Europe/Moscow"));
-        ZonedDateTime startTimeSecondTask = ZonedDateTime.of(  // Стартовое время второй подзадачи
-                LocalDateTime.of(2022,5,1,11,0,0,0),
-                ZoneId.of("Europe/Moscow"));
-        List<Subtask> list = new ArrayList<>();
-        Subtask subtask1 = new Subtask("Подзадача 1", Status.NEW, "Первая подзадача", 1,
-                startTimeFirstTask, Duration.ofMinutes(60));
+        List<Subtask> expect = new ArrayList<>();
+        Subtask subtask1 = objectsForTests.firstSubtask();
         subtask1.setId(2);
-        list.add(subtask1);
-        Subtask subtask2 = new Subtask("Подзадача 2", Status.NEW, "Вторая подзадача", 1,
-                startTimeSecondTask, Duration.ofMinutes(60));
+        expect.add(subtask1);
+        Subtask subtask2 = objectsForTests.secondSubtask();
         subtask2.setId(3);
-        list.add(subtask2);
+        expect.add(subtask2);
         taskManager.getNewEpic(new Epic("Эпик 1", "Первый"));
-        taskManager.getNewSubtask(new Subtask("Подзадача 1", Status.NEW, "Первая подзадача", 1,
-                startTimeFirstTask, Duration.ofMinutes(60)));
-        taskManager.getNewSubtask(new Subtask("Подзадача 2", Status.NEW, "Вторая подзадача", 1,
-                startTimeSecondTask, Duration.ofMinutes(60)));
-        Assertions.assertEquals(list, taskManager.getSubtaskList(1));
+        taskManager.getNewSubtask(objectsForTests.firstSubtask());
+        taskManager.getNewSubtask(objectsForTests.secondSubtask());
+        Assertions.assertEquals(expect, taskManager.getSubtaskList(1));
 
         List<Subtask> list1 = new ArrayList<>();
         taskManager.getNewEpic(new Epic("Эпик 2", "Второй"));
@@ -184,63 +121,42 @@ public abstract class TaskManagerTest <T extends TaskManager> {
                 () -> taskManager.clearSubtasks(777));
         Assertions.assertEquals("Эпик не найден", ex.getMessage());
 
-        ZonedDateTime startTimeFirstTask = ZonedDateTime.of(  // Стартовое время первой подзадачи
-                LocalDateTime.of(2022,5,1,9,0,0,0),
-                ZoneId.of("Europe/Moscow"));
-        ZonedDateTime startTimeSecondTask = ZonedDateTime.of(  // Стартовое время второй подзадачи
-                LocalDateTime.of(2022,5,1,11,0,0,0),
-                ZoneId.of("Europe/Moscow"));
         taskManager.getNewEpic(new Epic("Эпик 1", "Первый"));
-        taskManager.getNewSubtask(new Subtask("Подзадача 1", Status.NEW, "Первая подзадача", 1,
-                startTimeFirstTask, Duration.ofMinutes(60)));
-        taskManager.getNewSubtask(new Subtask("Подзадача 2", Status.NEW, "Вторая подзадача", 1,
-                startTimeSecondTask, Duration.ofMinutes(60)));
+        taskManager.getNewSubtask(objectsForTests.firstSubtask());
+        taskManager.getNewSubtask(objectsForTests.secondSubtask());
         taskManager.clearSubtasks(1);
         Assertions.assertTrue(taskManager.getEpics().get(1).getSubtasks().isEmpty(), "Подзадачи не удалены");
     }
 
     @Test
     public void shouldGetSubtaskById() {
-        ZonedDateTime startTimeFirstTask = ZonedDateTime.of(  // Стартовое время первой подзадачи
-                LocalDateTime.of(2022,5,1,9,0,0,0),
-                ZoneId.of("Europe/Moscow"));
-        ZonedDateTime startTimeSecondTask = ZonedDateTime.of(  // Стартовое время второй подзадачи
-                LocalDateTime.of(2022,5,1,11,0,0,0),
-                ZoneId.of("Europe/Moscow"));
         NullPointerException ex = Assertions.assertThrows(NullPointerException.class,
                 () -> taskManager.getSubtaskById(777, 333));
         Assertions.assertEquals("Объект не найден", ex.getMessage());
 
-        Subtask subtask = new Subtask("Подзадача 1", Status.NEW, "Первая подзадача", 1,
-                startTimeFirstTask, Duration.ofMinutes(60));
+        Subtask subtask = objectsForTests.firstSubtask();
         subtask.setId(2);
         taskManager.getNewEpic(new Epic("Эпик 1", "Первый"));
-        taskManager.getNewSubtask(new Subtask("Подзадача 1", Status.NEW, "Первая подзадача", 1,
-                startTimeFirstTask, Duration.ofMinutes(60)));
-        taskManager.getNewSubtask(new Subtask("Подзадача 2", Status.NEW, "Вторая подзадача", 1,
-                startTimeSecondTask, Duration.ofMinutes(60)));
+        taskManager.getNewSubtask(objectsForTests.firstSubtask());
+        taskManager.getNewSubtask(objectsForTests.secondSubtask());
         Assertions.assertEquals(subtask, taskManager.getSubtaskById(1, 2));
     }
 
     @Test
     public void shouldGetNewSubtask() {
-        ZonedDateTime startTimeFirstTask = ZonedDateTime.of(  // Стартовое время первой подзадачи
-                LocalDateTime.of(2022,5,1,9,0,0,0),
-                ZoneId.of("Europe/Moscow"));
-        Subtask subtask = new Subtask("Подзадача 1", Status.NEW, "Первая подзадача", 1,
-                startTimeFirstTask, Duration.ofMinutes(60));
+        Subtask subtask = objectsForTests.firstSubtask();
         subtask.setId(777);
         NullPointerException ex = Assertions.assertThrows(NullPointerException.class,
                 () -> taskManager.getNewSubtask(subtask));
         Assertions.assertEquals("Объект не найден", ex.getMessage());
 
+        taskManager.setId(0);
         taskManager.getNewEpic(new Epic("Эпик 1", "Первый"));
-        Subtask subtask1 = new Subtask("Подзадача 1", Status.NEW, "Первая подзадача", 2,
-                startTimeFirstTask, Duration.ofMinutes(60));
-        subtask1.setId(3);
+        Subtask subtask1 = objectsForTests.firstSubtask();
+        subtask1.setId(2);
         taskManager.getNewSubtask(subtask1);
-        Assertions.assertEquals(subtask1, taskManager.getEpics().get(2).getSubtasks().get(3));
-     }
+        Assertions.assertEquals(subtask1, taskManager.getEpics().get(1).getSubtasks().get(2));
+    }
 
 
     @Test
@@ -255,12 +171,9 @@ public abstract class TaskManagerTest <T extends TaskManager> {
                 LocalDateTime.of(2022,5,1,15,0,0,0),
                 ZoneId.of("Europe/Moscow"));
         taskManager.getNewEpic(new Epic("Эпик 1", "Первый"));
-        taskManager.getNewSubtask(new Subtask("Подзадача 1", Status.NEW, "Первая подзадача", 1,
-                startTimeFirstTask, Duration.ofMinutes(60)));
-        taskManager.getNewSubtask(new Subtask("Подзадача 2", Status.NEW, "Вторая подзадача", 1,
-                startTimeSecondTask, Duration.ofMinutes(60)));
-        Subtask subtask = new Subtask("Подзадача 3", Status.NEW, "Третья подзадача", 1,
-                startTimeThirdTask, Duration.ofMinutes(60));
+        taskManager.getNewSubtask(objectsForTests.firstSubtask());
+        taskManager.getNewSubtask(objectsForTests.secondSubtask());
+        Subtask subtask = objectsForTests.thirdSubtask();
         subtask.setId(777);
         NullPointerException ex = Assertions.assertThrows(NullPointerException.class,
                 () -> taskManager.updateSubtask(subtask));
@@ -285,21 +198,13 @@ public abstract class TaskManagerTest <T extends TaskManager> {
 
     @Test
     public void shouldRemoveSubtaskById() {
-        ZonedDateTime startTimeFirstTask = ZonedDateTime.of(  // Стартовое время первой подзадачи
-                LocalDateTime.of(2022,5,1,9,0,0,0),
-                ZoneId.of("Europe/Moscow"));
-        ZonedDateTime startTimeSecondTask = ZonedDateTime.of(  // Стартовое время второй подзадачи
-                LocalDateTime.of(2022,5,1,11,0,0,0),
-                ZoneId.of("Europe/Moscow"));
         NullPointerException ex = Assertions.assertThrows(NullPointerException.class,
                 () -> taskManager.removeSubtaskById(777, 333));
         Assertions.assertEquals("Объект не найден", ex.getMessage());
 
         taskManager.getNewEpic(new Epic("Эпик 1", "Первый"));
-        taskManager.getNewSubtask(new Subtask("Подзадача 1", Status.NEW, "Первая подзадача", 1,
-                startTimeFirstTask, Duration.ofMinutes(60)));
-        taskManager.getNewSubtask(new Subtask("Подзадача 2", Status.NEW, "Вторая подзадача", 1,
-                startTimeSecondTask, Duration.ofMinutes(60)));
+        taskManager.getNewSubtask(objectsForTests.firstSubtask());
+        taskManager.getNewSubtask(objectsForTests.secondSubtask());
         Subtask subtask = taskManager.getEpics().get(1).getSubtasks().get(2);
         taskManager.removeSubtaskById(1, 2);
         Assertions.assertFalse(taskManager.getEpics().get(1).getSubtasks().containsKey(subtask.getId()));

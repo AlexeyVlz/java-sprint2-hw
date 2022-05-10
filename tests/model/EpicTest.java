@@ -19,18 +19,17 @@ class EpicTest {
         if(!taskManager.getEpics().isEmpty()) {
             taskManager.getEpics().clear();
         }
+        taskManager.getNewEpic(new Epic("Эпик 1", "Первый"));
     }
 
     @Test
     public void statusShouldBeNewIfSubtasksEmpty() {
-        taskManager.getNewEpic(new Epic("Эпик 1", "Первый"));
         Assertions.assertEquals(Status.valueOf("NEW"), taskManager.getEpics().get(1).getStatus(),
                 "Статус не совпадает");
     }
 
     @Test
     public void statusShouldBeNewIfAllSubtasksHasStatusNew() {
-        taskManager.getNewEpic(new Epic("Эпик 1", "Первый"));
         ZonedDateTime startTimeFirstTask = ZonedDateTime.of(  // Стартовое время первой подзадачи
                 LocalDateTime.of(2022,5,1,9,0,0,0),
                 ZoneId.of("Europe/Moscow"));
@@ -47,7 +46,6 @@ class EpicTest {
 
     @Test
     public void statusShouldBeDoneIfAllSubtasksHasStatusDone() {
-        taskManager.getNewEpic(new Epic("Эпик 1", "Первый"));
         ZonedDateTime startTimeFirstTask = ZonedDateTime.of(  // Стартовое время первой подзадачи
                 LocalDateTime.of(2022,5,1,9,0,0,0),
                 ZoneId.of("Europe/Moscow"));
@@ -64,7 +62,6 @@ class EpicTest {
 
     @Test
     public void statusShouldBeIn_ProgressIfSubtasksHasStatusNewAndDone() {
-        taskManager.getNewEpic(new Epic("Эпик 1", "Первый"));
         ZonedDateTime startTimeFirstTask = ZonedDateTime.of(  // Стартовое время первой подзадачи
                 LocalDateTime.of(2022,5,1,9,0,0,0),
                 ZoneId.of("Europe/Moscow"));
@@ -81,7 +78,6 @@ class EpicTest {
 
     @Test
     public void statusShouldBeIn_ProgressIfSubtasksHasStatusIn_Progress() {
-        taskManager.getNewEpic(new Epic("Эпик 1", "Первый"));
         ZonedDateTime startTimeFirstTask = ZonedDateTime.of(  // Стартовое время первой подзадачи
                 LocalDateTime.of(2022,5,1,9,0,0,0),
                 ZoneId.of("Europe/Moscow"));

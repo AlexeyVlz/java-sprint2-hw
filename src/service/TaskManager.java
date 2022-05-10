@@ -9,9 +9,11 @@ import java.util.TreeSet;
 
 public interface TaskManager {
 
-    public TreeSet<Records> getPrioritizedTasks();
+    public void setId(int id);
 
-    HistoryManager getHistoryManager();
+    TreeSet<Records> getPrioritizedTasks();
+
+    HistoryManager<Records> getHistoryManager();
 
     HashMap<Integer, Task> getTasks();
 
