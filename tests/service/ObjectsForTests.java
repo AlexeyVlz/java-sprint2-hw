@@ -52,27 +52,4 @@ public class ObjectsForTests {
                 startTimeThirdTask, Duration.ofMinutes(60));
     }
 
-    /*public Epic getNewEpicWithTwoSubtasks() {
-        Epic epic = new Epic("Эпик 1", "Первый");
-        epic.setId(1);
-        epic.setStatus(Status.NEW);
-        ZonedDateTime startTimeFirstTask = ZonedDateTime.of(  // Стартовое время первой подзадачи
-                LocalDateTime.of(2022,5,1,9,0,0,0),
-                ZoneId.of("Europe/Moscow"));
-        Subtask subtask = new Subtask("Подзадача 1", Status.NEW, "Первая подзадача", 1,
-                startTimeFirstTask, Duration.ofMinutes(60));
-        subtask.setId(2);
-        ZonedDateTime startTimeSecondTask = ZonedDateTime.of(  // Стартовое время второй подзадачи
-                LocalDateTime.of(2022,5,1,11,0,0,0),
-                ZoneId.of("Europe/Moscow"));
-        Subtask subtask1 = new Subtask("Подзадача 2", Status.NEW, "Вторая подзадача", 1,
-                startTimeSecondTask, Duration.ofMinutes(60));
-        subtask1.setId(3);
-        epic.getSubtasks().put(subtask.getId(), subtask);
-        epic.getSubtasks().put(subtask1.getId(),subtask1);
-        epic.setStartTime();
-        epic.setDuration();
-        epic.setEndTime();
-        return  epic;
-    }*/
 }

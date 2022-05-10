@@ -91,17 +91,21 @@ public class InMemoryTaskManager implements TaskManager {
     public HashMap<Integer, Task> getNewTask (Task task) { // добавление новой задачи
             for (Records record : prioritizedTasks) {
                 if (task.getStartTime().isAfter(record.getStartTime()) &&
-                        task.getStartTime().isBefore(record.getEndTime())) {
-                    System.out.println("Время выполнения задачи пересекается со временем" +
+                        task.getStartTime().isBefore(record.getEndTime()) ||
+                        task.getStartTime().isEqual(record.getStartTime()) ||
+                        task.getStartTime().isEqual(record.getStartTime())) {
+                    System.out.println("Время выполнения задачи пересекается со временем " +
                             record.getTitle());
-                    throw new ManagerSaveException("Время выполнения задачи пересекается со временем" +
+                    throw new ManagerSaveException("Время выполнения задачи пересекается со временем " +
                             record.getTitle());
                 }
                 if (task.getEndTime().isAfter(record.getStartTime()) &&
-                        task.getEndTime().isBefore(record.getEndTime())) {
-                    System.out.println("Время выполнения задачи пересекается со временем" +
+                        task.getEndTime().isBefore(record.getEndTime()) ||
+                        task.getEndTime().isEqual(record.getStartTime()) ||
+                        task.getEndTime().isEqual(record.getEndTime())) {
+                    System.out.println("Время выполнения задачи пересекается со временем " +
                             record.getTitle());
-                    throw new ManagerSaveException("Время выполнения задачи пересекается со временем" +
+                    throw new ManagerSaveException("Время выполнения задачи пересекается со временем " +
                             record.getTitle());
                 }
             }
@@ -199,17 +203,21 @@ public class InMemoryTaskManager implements TaskManager {
     public HashMap<Integer, Epic> getNewSubtask (Subtask subtask) { // создаем подзадачи
         for (Records record : prioritizedTasks) {
             if (subtask.getStartTime().isAfter(record.getStartTime()) &&
-                    subtask.getStartTime().isBefore(record.getEndTime())) {
-                System.out.println("Время выполнения задачи пересекается со временем" +
+                    subtask.getStartTime().isBefore(record.getEndTime()) ||
+                    subtask.getStartTime().isEqual(record.getStartTime()) ||
+                    subtask.getStartTime().isEqual(record.getStartTime())) {
+                System.out.println("Время выполнения задачи пересекается со временем " +
                         record.getTitle());
-                throw new ManagerSaveException("Время выполнения задачи пересекается со временем" +
+                throw new ManagerSaveException("Время выполнения задачи пересекается со временем " +
                         record.getTitle());
             }
             if (subtask.getEndTime().isAfter(record.getStartTime()) &&
-                    subtask.getEndTime().isBefore(record.getEndTime())) {
-                System.out.println("Время выполнения задачи пересекается со временем" +
+                    subtask.getEndTime().isBefore(record.getEndTime()) ||
+                    subtask.getEndTime().isEqual(record.getStartTime()) ||
+                    subtask.getEndTime().isEqual(record.getEndTime())) {
+                System.out.println("Время выполнения задачи пересекается со временем " +
                         record.getTitle());
-                throw new ManagerSaveException("Время выполнения задачи пересекается со временем" +
+                throw new ManagerSaveException("Время выполнения задачи пересекается со временем " +
                         record.getTitle());
             }
         }
