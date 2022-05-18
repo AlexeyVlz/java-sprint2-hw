@@ -202,15 +202,18 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             br.close();
             int id = 0;
             for(Task task : manager.getTasks().values()){
+                manager.prioritizedTasks.add(task);
                 if(id < task.getId()){
                     id = task.getId();
                 }
             }
             for(Epic epic : manager.getEpics().values()){
+                manager.prioritizedTasks.add(epic);
                 if(id < epic.getId()){
                     id = epic.getId();
                 }
                 for(Subtask subtask : epic.getSubtasks().values()){
+                    manager.prioritizedTasks.add(subtask);
                     if(id < subtask.getId()){
                         id = subtask.getId();
                     }
@@ -220,6 +223,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         } catch (IOException e) {
             System.out.println("Файл не найден");
         }
+
         return manager;
     }
 
@@ -252,7 +256,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                                 Integer.parseInt(splitStartTime[0]),Integer.parseInt(splitStartTime[1]),
                                 Integer.parseInt(splitStartTime[2]), Integer.parseInt(splitStartTime[3]),
                                 Integer.parseInt(splitStartTime[4]),Integer.parseInt(splitStartTime[5])),
-                        ZoneId.of("Europe/Moscow"));
+                        ZoneId.systemDefault());
             }
             if (split[1].equals(Types.TASK.toString())) {
                 Task task = (new Task(split[2], status, split[4], startTime,

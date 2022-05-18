@@ -12,6 +12,7 @@ public class Task extends Records {
     public Task(String title, Status status, String specification, ZonedDateTime startTime,
                 Duration duration) {
         super(title, status, 0, specification, startTime, duration);
+
     }
 
     @Override
