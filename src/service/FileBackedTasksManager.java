@@ -8,6 +8,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -139,7 +140,18 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 bufferedWriter.write(tasks.get(id).toString() + "\n");
             }
             for(Integer id : epics.keySet()) {
-                bufferedWriter.write(epics.get(id).toString() + "\n");
+                Epic epic = epics.get(id);
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy;MM;dd;HH;mm;ss");
+                String stringStartTime;
+                if(epic.getStartTime() != null){
+                    stringStartTime = formatter.format(epic.getStartTime());
+                } else {
+                    stringStartTime = "null";
+                }
+                String epicString = epic.getId() + "," + Types.EPIC + "," + epic.getTitle() + "," + epic.getStatus()
+                        + "," + epic.getSpecification() + "," + stringStartTime + ","
+                        + (int) epic.getDuration().toMinutes();
+                bufferedWriter.write(epicString + "\n");
                 if(!(epics.get(id).getSubtasks().isEmpty())) {
                     for(Integer idSubtask : epics.get(id).getSubtasks().keySet()) {
                         bufferedWriter.write(epics.get(id).getSubtasks().get(idSubtask).toString() + "\n");

@@ -318,7 +318,6 @@ public class InMemoryTaskManager implements TaskManager {
     public HashMap<Integer, Epic> getNewEpic (Epic epic) { // добавление нового эпика
         epic.setId(++id);
         epic.setSubtasks();
-        epic.setStatus(Status.NEW);
         epics.put(id, epic);
         return epics;
     }
@@ -326,6 +325,9 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public HashMap<Integer, Epic> updateEpic (Epic epic) { // обновляем эпик
         if(epics.containsKey(epic.getId())) {
+            epic.setDuration();
+            epic.setStartTime();
+            epic.setEndTime();
             epics.put(epic.getId(), epic);
             return epics;
         } else {
@@ -336,6 +338,11 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public HashMap<Integer, Epic> removeEpic (int identifier) { // удаляем эпик по ID
         if(epics.containsKey(identifier)) {
+            if (!epics.get(identifier).getSubtasks().isEmpty()){
+                for(Subtask subtask : epics.get(identifier).getSubtasks().values()){
+                    prioritizedTasks.remove(subtask);
+                }
+            }
             epics.remove(identifier);
             historyManager.remove(identifier);
             return epics;

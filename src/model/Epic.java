@@ -18,6 +18,7 @@ public class Epic extends Records {
         super(title, 0, specification);
         this.subtasks = new HashMap<>();
         this.duration = calculateDuration();
+        this.status = Status.NEW;
     }
 
     public Duration calculateDuration() {
@@ -95,7 +96,6 @@ public class Epic extends Records {
         } else {
             stringStartTime = "null";
         }
-        return id + "," + Types.EPIC + "," + title + "," + status + "," + specification + "," +
-                stringStartTime + "," + (int) duration.toMinutes();
+        return id + "," + Types.EPIC + "," + title + "," + status + "," + specification + ",";
     }
 }

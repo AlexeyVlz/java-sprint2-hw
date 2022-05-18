@@ -84,5 +84,5 @@ public abstract class Records {
         return Objects.hash(title, status, id);
     }
 
-
+    
 }

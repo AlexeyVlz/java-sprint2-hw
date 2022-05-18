@@ -33,8 +33,34 @@ public class HttpTaskServer {
 
     public HttpTaskServer() {
         this.manager = FileBackedTasksManager.loadFromFile(Paths.get("Api.txt"));
-        this.gson = new GsonBuilder().serializeNulls().registerTypeAdapter(ZonedDateTime.class, new ZonedDateTimeAdapter()).
-                registerTypeAdapter(Duration.class, new DurationAdapter()).create();
+        this.gson = new GsonBuilder().serializeNulls().
+                registerTypeAdapter(ZonedDateTime.class, new TypeAdapter<ZonedDateTime>() {
+                    DateTimeFormatter formatterWriter = DateTimeFormatter.ofPattern("dd--MM--yyyy, HH:mm:ss,SSS");
+                    DateTimeFormatter formatterReader = DateTimeFormatter.ofPattern("yyyy, MM, dd, HH, mm, ss, SSS");
+
+                    @Override
+                    public void write(final JsonWriter jsonWriter, final ZonedDateTime DateTime) throws IOException {
+                        jsonWriter.value(DateTime.format(formatterWriter));
+                    }
+
+                    @Override
+                    public ZonedDateTime read(final JsonReader jsonReader) throws IOException {
+                        return ZonedDateTime.of(LocalDateTime.parse(jsonReader.nextString(), formatterWriter),
+                                ZoneId.systemDefault());
+
+                    }
+                }).
+                registerTypeAdapter(Duration.class, new TypeAdapter<Duration>() {
+                    @Override
+                    public void write(final JsonWriter jsonWriter, final Duration duration) throws IOException {
+                        jsonWriter.value(duration.toMinutes());
+                    }
+
+                    @Override
+                    public Duration read(final JsonReader jsonReader) throws IOException {
+                        return Duration.ofMinutes(jsonReader.nextInt());
+                    }
+                }).create();
 
     }
 
@@ -130,6 +156,46 @@ public class HttpTaskServer {
             }
         });
 
+        httpServer.createContext("/Tasks/updateEpic", new HttpHandler() {
+            @Override
+            public void handle(HttpExchange exchange) throws IOException {
+                InputStream inputStream = exchange.getRequestBody();
+                String body = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+                Epic epic = gson.fromJson(body, Epic.class);
+                try{
+                    manager.updateEpic(epic);
+
+                    exchange.sendResponseHeaders(200, 0);
+                    try (OutputStream os = exchange.getResponseBody()) {
+                        os.write(gson.toJson("Задача успешно обновлена").getBytes());
+                    }
+                } catch (NullPointerException exception) {
+                    exchange.sendResponseHeaders(404, 0);
+                    try (OutputStream os = exchange.getResponseBody()) {
+                        os.write(gson.toJson(exception.getMessage()).getBytes());
+                    }
+                }
+            }
+        });
+
+        httpServer.createContext("/Tasks/RemoveEpic", new HttpHandler() {
+            @Override
+            public void handle(HttpExchange exchange) throws IOException {
+                int id = Integer.parseInt(exchange.getRequestURI().toString().split("\\?")[1].split("=")[1]);
+                try{
+                    manager.removeEpic(id);
+                    exchange.sendResponseHeaders(200, 0);
+                    try (OutputStream os = exchange.getResponseBody()) {
+                        os.write(gson.toJson("Эпик удалён").getBytes());
+                    }
+                } catch (NullPointerException exception){
+                    exchange.sendResponseHeaders(404, 0);
+                    try (OutputStream os = exchange.getResponseBody()) {
+                        os.write(gson.toJson(exception.getMessage()).getBytes());
+                    }
+                }
+            }
+        });
 
         httpServer.start();
         System.out.println("Сервер запущен");
@@ -381,40 +447,5 @@ public class HttpTaskServer {
         }
     }
 
-
-
-
-
-
-
-    class ZonedDateTimeAdapter extends TypeAdapter<ZonedDateTime> {
-        DateTimeFormatter formatterWriter = DateTimeFormatter.ofPattern("dd--MM--yyyy, HH:mm:ss,SSS");
-        DateTimeFormatter formatterReader = DateTimeFormatter.ofPattern("yyyy, MM, dd, HH, mm, ss, SSS");
-
-        @Override
-        public void write(final JsonWriter jsonWriter, final ZonedDateTime DateTime) throws IOException {
-            jsonWriter.value(DateTime.format(formatterWriter));
-        }
-
-        @Override
-        public ZonedDateTime read(final JsonReader jsonReader) throws IOException {
-            return ZonedDateTime.of(LocalDateTime.parse(jsonReader.nextString(), formatterWriter),
-                    ZoneId.systemDefault());
-
-        }
-    }
-
-    class DurationAdapter extends TypeAdapter<Duration> {
-
-        @Override
-        public void write(final JsonWriter jsonWriter, final Duration duration) throws IOException {
-            jsonWriter.value(duration.toMinutes());
-        }
-
-        @Override
-        public Duration read(final JsonReader jsonReader) throws IOException {
-            return Duration.ofMinutes(jsonReader.nextInt());
-        }
-    }
 
 }
