@@ -55,8 +55,81 @@ public class HttpTaskServer {
         httpServer.createContext("/Tasks/RemoveSubtaskById", new RemoveSubtaskByIdHandler());
 
 
+        httpServer.createContext("/Tasks/GetEpicsList", new HttpHandler() {
+            @Override
+            public void handle(HttpExchange exchange) throws IOException {
+                if(!manager.getEpics().isEmpty()){
+                    exchange.sendResponseHeaders(200, 0);
+                    try (OutputStream os = exchange.getResponseBody()) {
+                        os.write(gson.toJson(manager.getEpicsList()).getBytes());
+                    }
+                } else {
+                    exchange.sendResponseHeaders(200, 0);
+                    try (OutputStream os = exchange.getResponseBody()) {
+                        os.write(gson.toJson("Список задач пуст").getBytes());
+                    }
+                }
+            }
+        });
 
-        httpServer.createContext("/Tasks/GetEpic", new GetEpicByIdHandler());
+        httpServer.createContext("/Tasks/ClearEpicsList", new HttpHandler() {
+            @Override
+            public void handle(HttpExchange exchange) throws IOException {
+                manager.clearEpicsList();
+                if(manager.getEpics().isEmpty()) {
+                    exchange.sendResponseHeaders(200, 0);
+                    try (OutputStream os = exchange.getResponseBody()) {
+                        os.write(gson.toJson("Список эпиков очищен").getBytes());
+                    }
+                } else {
+                    exchange.sendResponseHeaders(404, 0);
+                    try (OutputStream os = exchange.getResponseBody()) {
+                        os.write(gson.toJson("Что-то пошло не так. Не удалось очистить список задач").getBytes());
+                    }
+                }
+            }
+        });
+
+        httpServer.createContext("/Tasks/GetEpic", new HttpHandler() {
+            @Override
+            public void handle(HttpExchange exchange) throws IOException {
+                int id = Integer.parseInt(exchange.getRequestURI().toString().split("\\?")[1].split("=")[1]);
+                try {
+                    Epic epic = manager.getEpicById(id);
+                    exchange.sendResponseHeaders(200, 0);
+                    try (OutputStream os = exchange.getResponseBody()) {
+                        os.write(gson.toJson(epic).getBytes());
+                    }
+                } catch (NullPointerException exception) {
+                    exchange.sendResponseHeaders(404, 0);
+                    try (OutputStream os = exchange.getResponseBody()) {
+                        os.write(gson.toJson(exception.getMessage()).getBytes());
+                    }
+                }
+            }
+        });
+
+        httpServer.createContext("/Tasks/PostNewEpic", new HttpHandler() {
+            @Override
+            public void handle(HttpExchange exchange) throws IOException {
+                InputStream inputStream = exchange.getRequestBody();
+                String body = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+                Epic epic = gson.fromJson(body, Epic.class);
+                    manager.getNewEpic(epic);
+                    if(manager.getEpics().containsKey(epic.getId())) {
+                        exchange.sendResponseHeaders(200, 0);
+                        try (OutputStream os = exchange.getResponseBody()) {
+                            os.write(gson.toJson("Задача успешно добавлена").getBytes());
+                        }
+                    } else {
+                        exchange.sendResponseHeaders(404, 0);
+                        try (OutputStream os = exchange.getResponseBody()) {
+                            os.write(gson.toJson("Что-то пошло не так. Добавить новый эпик не удалось").getBytes());
+                        }
+                    }
+            }
+        });
+
 
         httpServer.start();
         System.out.println("Сервер запущен");
@@ -310,26 +383,6 @@ public class HttpTaskServer {
 
 
 
-
-    class GetEpicByIdHandler implements HttpHandler {
-        @Override
-        public void handle(HttpExchange exchange) throws IOException {
-            int id = Integer.parseInt(exchange.getRequestURI().toString().split("\\?")[1].split("=")[1]);
-            try {
-                Epic epic = manager.getEpicById(id);
-                exchange.sendResponseHeaders(200, 0);
-                try (OutputStream os = exchange.getResponseBody()) {
-                    os.write(gson.toJson(epic).getBytes());
-                }
-            } catch (NullPointerException exception) {
-                exchange.sendResponseHeaders(404, 0);
-                try (OutputStream os = exchange.getResponseBody()) {
-                    os.write(gson.toJson(exception.getMessage()).getBytes());
-                }
-            }
-
-        }
-    }
 
 
 

@@ -12,7 +12,7 @@ import java.util.Objects;
 
 
 public class Epic extends Records {
-    final private HashMap<Integer, Subtask> subtasks;
+    private HashMap<Integer, Subtask> subtasks;
 
     public Epic(String title, String specification) {
         super(title, 0, specification);
@@ -66,6 +66,10 @@ public class Epic extends Records {
 
     public HashMap<Integer, Subtask> getSubtasks() {
         return subtasks;
+    }
+
+    public void setSubtasks() {
+        this.subtasks = new HashMap<>();
     }
 
     @Override

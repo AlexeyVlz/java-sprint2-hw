@@ -208,7 +208,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 }
             }
             for(Epic epic : manager.getEpics().values()){
-                manager.prioritizedTasks.add(epic);
                 if(id < epic.getId()){
                     id = epic.getId();
                 }

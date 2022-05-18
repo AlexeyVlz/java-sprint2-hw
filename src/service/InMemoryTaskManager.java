@@ -317,8 +317,9 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public HashMap<Integer, Epic> getNewEpic (Epic epic) { // добавление нового эпика
         epic.setId(++id);
+        epic.setSubtasks();
+        epic.setStatus(Status.NEW);
         epics.put(id, epic);
-        epic.setStatus(calculateStatus(id));
         return epics;
     }
 
@@ -344,37 +345,40 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     public Status calculateStatus (int epicId) {
-        try {
-            Status newStatus = Status.NEW;
-            ArrayList<Status> statuses = new ArrayList<>();
-            for (Integer key : epics.get(epicId).getSubtasks().keySet()) { // достаем каждую подзадачу
-                statuses.add(epics.get(epicId).getSubtasks().get(key).getStatus()); // складываем ее в список
-            }
-            if (statuses.isEmpty()) {
-                return newStatus;
-            }
-            int statusNew = 0;
-            int statusDone = 0;
-            for (Status status : statuses) {
-                if (Status.NEW.equals(status)) {
-                    statusNew = statusNew + 1;
+        Status newStatus = Status.NEW;
+        if(!epics.get(epicId).getSubtasks().isEmpty()) {
+            try {
+                ArrayList<Status> statuses = new ArrayList<>();
+                for (Integer key : epics.get(epicId).getSubtasks().keySet()) { // достаем каждую подзадачу
+                    statuses.add(epics.get(epicId).getSubtasks().get(key).getStatus()); // складываем ее в список
                 }
-                if (Status.DONE.equals(status)) {
-                    statusDone = statusDone + 1;
+                if (statuses.isEmpty()) {
+                    return newStatus;
                 }
+                int statusNew = 0;
+                int statusDone = 0;
+                for (Status status : statuses) {
+                    if (Status.NEW.equals(status)) {
+                        statusNew = statusNew + 1;
+                    }
+                    if (Status.DONE.equals(status)) {
+                        statusDone = statusDone + 1;
+                    }
+                }
+                if (statuses.size() == statusNew) {
+                    return newStatus;
+                } else if (statuses.size() == statusDone) {
+                    newStatus = Status.DONE;
+                    return newStatus;
+                } else {
+                    newStatus = Status.IN_PROGRESS;
+                    return newStatus;
+                }
+            } catch (NullPointerException e) {
+                throw new NullPointerException("Такой эпик не создавался");
             }
-            if (statuses.size() == statusNew) {
-                return newStatus;
-            } else if (statuses.size() == statusDone) {
-                newStatus = Status.DONE;
-                return newStatus;
-            } else {
-                newStatus = Status.IN_PROGRESS;
-                return newStatus;
-            }
-        } catch (NullPointerException e) {
-            throw new NullPointerException("Такой эпик не создавался");
         }
+        return newStatus;
     }
 
 
