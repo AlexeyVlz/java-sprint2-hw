@@ -1,16 +1,21 @@
 import API.HttpTaskServer;
+import API.KVServer;
 
 import java.io.IOException;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException{
 
         HttpTaskServer httpTaskServer = new HttpTaskServer();
-        try {
-            httpTaskServer.createServer();
-        } catch (IOException e) {
-            System.out.println("Исключение");
-        }
+        httpTaskServer.createServer();
+
+        new KVServer().start();
+
+
+
+
+
+
 
     }
 

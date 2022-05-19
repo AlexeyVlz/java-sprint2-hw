@@ -14,12 +14,13 @@ import java.util.HashMap;
 import java.util.List;
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
-    private final Path path;
+    protected final Path path;
 
     public FileBackedTasksManager(Path path) {
         super();
         this.path = path;
     }
+
 
     public Path getPath() {
         return path;
