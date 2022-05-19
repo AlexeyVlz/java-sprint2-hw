@@ -197,6 +197,41 @@ public class HttpTaskServer {
             }
         });
 
+        httpServer.createContext("/Tasks/getPrioritizedTasks", new HttpHandler() {
+            @Override
+            public void handle(HttpExchange exchange) throws IOException {
+                if(!manager.getPrioritizedTasks().isEmpty()){
+                    exchange.sendResponseHeaders(200, 0);
+                    try (OutputStream os = exchange.getResponseBody()) {
+                        os.write(gson.toJson(manager.getPrioritizedTasks()).getBytes());
+                    }
+                } else {
+                    exchange.sendResponseHeaders(200, 0);
+                    try (OutputStream os = exchange.getResponseBody()) {
+                        os.write(gson.toJson("Список задач по приоритету пуст").getBytes());
+                    }
+                }
+            }
+        });
+
+        httpServer.createContext("/Tasks/getHistoryManager", new HttpHandler() {
+            @Override
+            public void handle(HttpExchange exchange) throws IOException {
+                if(!manager.getHistoryManager().getHistory().isEmpty()){
+                    exchange.sendResponseHeaders(200, 0);
+                    try (OutputStream os = exchange.getResponseBody()) {
+                        os.write(gson.toJson(manager.getHistoryManager().getHistory()).getBytes());
+                    }
+                } else {
+                    exchange.sendResponseHeaders(200, 0);
+                    try (OutputStream os = exchange.getResponseBody()) {
+                        os.write(gson.toJson("История просмотров пуста").getBytes());
+                    }
+                }
+            }
+        });
+
+
         httpServer.start();
         System.out.println("Сервер запущен");
     }
