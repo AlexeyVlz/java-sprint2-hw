@@ -2,6 +2,7 @@ package service;
 
 import API.KVTaskClient;
 import model.Epic;
+import model.Records;
 import model.Subtask;
 import model.Task;
 
@@ -9,15 +10,15 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 public class HTTPTaskManager extends FileBackedTasksManager implements TaskManager{
 
-    String url;
+
     KVTaskClient kvTaskClient;
 
-    public HTTPTaskManager(String url, Path path) throws IOException, InterruptedException {
-        super(path);
-        this.url = url;
+    public HTTPTaskManager(String url) throws IOException, InterruptedException {
+        super(url);
         this.kvTaskClient = new KVTaskClient(url);
     }
 
@@ -46,6 +47,14 @@ public class HTTPTaskManager extends FileBackedTasksManager implements TaskManag
                 value.append("//").append(subtask.toString());
             }
         }
+        value.append("///");
+        String prefix = "";
+        for(Records history : historyManager.getHistory()){
+            value.append(prefix);
+            prefix = ",";
+            value.append(history.getId());
+        }
+
         try {
             kvTaskClient.put("manager", value.toString());
         } catch (InterruptedException | IOException exception){
@@ -53,5 +62,64 @@ public class HTTPTaskManager extends FileBackedTasksManager implements TaskManag
         }
     }
 
+
+    static public HTTPTaskManager loadFromServer(String key) throws IOException, InterruptedException {
+        HTTPTaskManager manager = new HTTPTaskManager(key);
+        String value = manager.kvTaskClient.load(key);
+        String[] newTasks = value.split("///");
+        String[] newTask = newTasks[0].split("//");
+        for(int i = 1; i < newTask.length; i++){
+            Records record = fromString(newTasks[i]);
+            if (record instanceof Task) {
+                Task task = (Task) record;
+                manager.getTasks().put(task.getId(), task);
+            } else if (record instanceof Epic) {
+                Epic epic = (Epic) record;
+                manager.getEpics().put(epic.getId(), epic);
+            } else if (record instanceof Subtask) {
+                Subtask subtask = (Subtask) record;
+                manager.getEpics().get(subtask.getEpicId()).getSubtasks().put(subtask.getId(), subtask);
+                manager.getEpics().get(subtask.getEpicId()).
+                        setStatus(manager.calculateStatus(subtask.getEpicId()));
+                manager.getEpics().get(subtask.getEpicId()).setStartTime();
+                manager.getEpics().get(subtask.getEpicId()).setDuration();
+                manager.getEpics().get(subtask.getEpicId()).setEndTime();
+            }
+        }
+        List<Integer> history = manager.fromStringToList(newTasks[1]);
+        for(Integer historyTaskId : history) {
+            if(manager.tasks.containsKey(historyTaskId)) {
+                manager.historyManager.add(manager.tasks.get(historyTaskId));
+            } else if (manager.epics.containsKey(historyTaskId)) {
+                manager.historyManager.add(manager.epics.get(historyTaskId));
+            } else {
+                for(Epic epic : manager.epics.values()) {
+                    if(epic.getSubtasks().containsKey(historyTaskId)) {
+                        manager.historyManager.add(epic.getSubtasks().get(historyTaskId));
+                    }
+                }
+            }
+        }
+        int id = 0;
+        for(Task task : manager.getTasks().values()){
+            manager.prioritizedTasks.add(task);
+            if(id < task.getId()){
+                id = task.getId();
+            }
+        }
+        for(Epic epic : manager.getEpics().values()){
+            if(id < epic.getId()){
+                id = epic.getId();
+            }
+            for(Subtask subtask : epic.getSubtasks().values()){
+                manager.prioritizedTasks.add(subtask);
+                if(id < subtask.getId()){
+                    id = subtask.getId();
+                }
+            }
+        }
+        manager.setId(id);
+        return manager;
+    }
 
 }

@@ -4,6 +4,7 @@ import model.*;
 
 import java.io.*;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -16,9 +17,9 @@ import java.util.List;
 public class FileBackedTasksManager extends InMemoryTaskManager {
     protected final Path path;
 
-    public FileBackedTasksManager(Path path) {
+    public FileBackedTasksManager(String path) {
         super();
-        this.path = path;
+        this.path = Paths.get(path);
     }
 
 
@@ -167,9 +168,9 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         }
     }
 
-    static public FileBackedTasksManager loadFromFile(Path path) {
+    static public FileBackedTasksManager loadFromFile(String path) {
         FileBackedTasksManager manager = new FileBackedTasksManager(path);
-        try (FileReader reader = new FileReader(path.getFileName().toString())) {
+        try (FileReader reader = new FileReader(manager.path.getFileName().toString())) {
             BufferedReader br = new BufferedReader(reader);
             while (br.ready()) {
                 String line = br.readLine();
@@ -194,7 +195,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                     }
                 } else {
                     line = br.readLine();
-                    List <Integer> history = fromStringToList(line);
+                    List <Integer> history = manager.fromStringToList(line);
                     for(Integer value : history) {
                         if(manager.tasks.containsKey(value)) {
                             manager.historyManager.add(manager.tasks.get(value));
@@ -239,7 +240,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         return manager;
     }
 
-    static private Records fromString(String value) { // создание задачи из строки
+    static protected Records fromString(String value) { // создание задачи из строки
         Status status;
         try {
             String[] split = value.split(",");
@@ -305,7 +306,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         return String.join(",", history);
     }
 
-    static private List<Integer> fromStringToList(String value) {
+    protected List<Integer> fromStringToList(String value) {
         List<Integer> history = new ArrayList<>();
         String[] values = value.split(",");
         for (String id : values) {

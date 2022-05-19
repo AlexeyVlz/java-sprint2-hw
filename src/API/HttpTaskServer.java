@@ -32,7 +32,7 @@ public class HttpTaskServer {
     Gson gson;
 
     public HttpTaskServer() {
-        this.manager = FileBackedTasksManager.loadFromFile(Paths.get("Api.txt"));
+        this.manager = FileBackedTasksManager.loadFromFile("Api.txt");
         this.gson = new GsonBuilder().serializeNulls().
                 registerTypeAdapter(ZonedDateTime.class, new TypeAdapter<ZonedDateTime>() {
                     DateTimeFormatter formatterWriter = DateTimeFormatter.ofPattern("dd--MM--yyyy, HH:mm:ss,SSS");
