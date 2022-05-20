@@ -23,7 +23,7 @@ public class HTTPTaskManager extends FileBackedTasksManager implements TaskManag
     }
 
     @Override
-    public void save()  {
+    public void save(String key)  {
         StringBuilder value = new StringBuilder();
         value.append("id,type,name,status,description,startTime,duration,epic");
         for(Task task : tasks.values()) {
@@ -56,7 +56,7 @@ public class HTTPTaskManager extends FileBackedTasksManager implements TaskManag
         }
 
         try {
-            kvTaskClient.put("manager", value.toString());
+            kvTaskClient.put(key, value.toString());
         } catch (InterruptedException | IOException exception){
             System.out.println("Не удалось сохранить данные на сервер");
         }

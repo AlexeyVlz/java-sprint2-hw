@@ -30,110 +30,110 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     @Override
     public HashMap<Integer, Task> clearTasksList () { // очистка списка задач
         super.clearTasksList();
-        save ();
+        save("key");
         return tasks;
     }
 
     @Override
     public Task getTaskById (int id) { // получение задачи по идентификатору
         super.getTaskById(id);
-        save ();
+        save("key");
         return tasks.get(id);
     }
 
     @Override
     public HashMap<Integer, Task> getNewTask (Task task) { // добавление новой задачи
         super.getNewTask(task);
-        save ();
+        save("key");
         return tasks;
     }
 
     @Override
     public HashMap<Integer, Task> updateTask (Task task) { // обновляем задачу
         super.updateTask(task);
-        save ();
+        save("key");
         return tasks;
     }
 
     @Override
     public HashMap<Integer, Task> removeTask (int identifier) { // удаляем задачу по ID
         super.removeTask(identifier);
-        save ();
+        save("key");
         return tasks;
     }
 
     @Override
     public Epic clearSubtasks (int identifier) { // очищаем список подзадач по ID эпика
         super.clearSubtasks(identifier);
-        save ();
+        save("key");
         return epics.get(identifier);
     }
 
     @Override
     public Subtask getSubtaskById (int EpicId, int SubtaskId) { // получаем подзадачу по идентификатору
         super.getSubtaskById(EpicId, SubtaskId);
-        save ();
+        save("key");
         return epics.get(EpicId).getSubtasks().get(SubtaskId);
     }
 
     @Override
     public HashMap<Integer, Epic> getNewSubtask (Subtask subtask) { // создаем подзадачи
         super.getNewSubtask(subtask);
-        save ();
+        save("key");
         return epics;
     }
 
     @Override
     public HashMap<Integer, Epic> updateSubtask (Subtask subtask) { //обновление подзадач
         super.updateSubtask(subtask);
-        save ();
+        save("key");
         return epics;
     }
 
     @Override
     public HashMap<Integer, Subtask> removeSubtaskById (int epicId, int subtaskId) { //удаление по ID
         super.removeSubtaskById(epicId, subtaskId);
-        save ();
+        save("key");
         return epics.get(epicId).getSubtasks();
     }
 
     @Override
     public HashMap<Integer, Epic> clearEpicsList () { // очистка списка эпиков
         super.clearEpicsList();
-        save();
+        save("key");
         return epics;
     }
 
     @Override
     public Epic getEpicById (int identifier) { // получение эпика по идентификатору
         super.getEpicById(identifier);
-        save();
+        save("key");
         return epics.get(identifier);
     }
 
     @Override
     public HashMap<Integer, Epic> getNewEpic (Epic epic) { // добавление нового эпика
         super.getNewEpic(epic);
-        save();
+        save("key");
         return epics;
     }
 
     @Override
     public HashMap<Integer, Epic> updateEpic (Epic epic) { // обновляем эпик
         super.updateEpic(epic);
-        save();
+        save("key");
         return epics;
     }
 
     @Override
     public HashMap<Integer, Epic> removeEpic (int identifier) { // удаляем эпик по ID
         super.removeEpic(identifier);
-        save();
+        save("key");
         return epics;
     }
 
 
-    public void save () { // сохранение задач в файл
+    public void save (String key) { // сохранение задач в файл
         final String tableNames = "id,type,name,status,description,startTime,duration,epic";
         try (Writer fileWriter = new FileWriter(path.getFileName().toString())) {
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
