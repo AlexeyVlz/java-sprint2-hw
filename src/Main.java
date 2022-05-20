@@ -6,10 +6,10 @@ import java.io.IOException;
 public class Main {
     public static void main(String[] args) throws IOException{
 
-        HttpTaskServer httpTaskServer = new HttpTaskServer();
-        httpTaskServer.createServer();
+        //HttpTaskServer httpTaskServer = new HttpTaskServer();
+        //httpTaskServer.createServer();
 
-        new KVServer().start();
+        //new KVServer().start();
 
 
 

@@ -14,6 +14,7 @@ import model.Status;
 import model.Subtask;
 import model.Task;
 import service.FileBackedTasksManager;
+import service.HTTPTaskManager;
 import service.TaskManager;
 
 import java.io.IOException;
@@ -31,8 +32,8 @@ public class HttpTaskServer {
     TaskManager manager;
     Gson gson;
 
-    public HttpTaskServer() {
-        this.manager = FileBackedTasksManager.loadFromFile("Api.txt");
+    public HttpTaskServer(HTTPTaskManager manager) {
+        this.manager = manager; HTTPTaskManager.loadFromFile("http://localhost:8078");
         this.gson = new GsonBuilder().serializeNulls().
                 registerTypeAdapter(ZonedDateTime.class, new TypeAdapter<ZonedDateTime>() {
                     DateTimeFormatter formatterWriter = DateTimeFormatter.ofPattern("dd--MM--yyyy, HH:mm:ss,SSS");

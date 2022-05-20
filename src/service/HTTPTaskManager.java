@@ -63,9 +63,9 @@ public class HTTPTaskManager extends FileBackedTasksManager implements TaskManag
     }
 
 
-    static public HTTPTaskManager loadFromServer(String key) throws IOException, InterruptedException {
-        HTTPTaskManager manager = new HTTPTaskManager(key);
-        String value = manager.kvTaskClient.load(key);
+    static public HTTPTaskManager loadFromServer(String url) throws IOException, InterruptedException {
+        HTTPTaskManager manager = new HTTPTaskManager(url);
+        String value = manager.kvTaskClient.load(url);
         String[] newTasks = value.split("///");
         String[] newTask = newTasks[0].split("//");
         for(int i = 1; i < newTask.length; i++){
