@@ -33,7 +33,7 @@ public class HttpTaskServer {
     Gson gson;
 
     public HttpTaskServer(HTTPTaskManager manager) {
-        this.manager = manager; HTTPTaskManager.loadFromFile("http://localhost:8078");
+        this.manager = manager;
         this.gson = new GsonBuilder().serializeNulls().
                 registerTypeAdapter(ZonedDateTime.class, new TypeAdapter<ZonedDateTime>() {
                     DateTimeFormatter formatterWriter = DateTimeFormatter.ofPattern("dd--MM--yyyy, HH:mm:ss,SSS");
@@ -63,6 +63,14 @@ public class HttpTaskServer {
                     }
                 }).create();
 
+    }
+
+    public TaskManager getManager() {
+        return manager;
+    }
+
+    public Gson getGson() {
+        return gson;
     }
 
     public void createServer() throws IOException {
@@ -484,4 +492,7 @@ public class HttpTaskServer {
     }
 
 
+    public void stop() {
+        httpServer.stop(1);
+    }
 }

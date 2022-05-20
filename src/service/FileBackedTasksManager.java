@@ -19,7 +19,11 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     public FileBackedTasksManager(String path) {
         super();
-        this.path = Paths.get(path);
+        if(!path.contains(":")) {
+            this.path = Paths.get(path);
+        } else {
+            this.path = Paths.get("path");
+        }
     }
 
 
