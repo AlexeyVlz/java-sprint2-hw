@@ -8,6 +8,8 @@ import service.Types;
 
 public class Task extends Records {
 
+    //Types type = Types.TASK;
+
 
     public Task(String title, Status status, String specification, ZonedDateTime startTime,
                 Duration duration) {
