@@ -83,4 +83,6 @@ public abstract class Records {
     public int hashCode() {
         return Objects.hash(title, status, id);
     }
+
+    
 }

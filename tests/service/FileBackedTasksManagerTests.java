@@ -23,12 +23,12 @@ public class FileBackedTasksManagerTests extends TaskManagerTest<FileBackedTasks
     FileBackedTasksManager taskManager;
 
     public FileBackedTasksManagerTests() {
-        super(new FileBackedTasksManager(Paths.get("test.txt")));
+        super(new FileBackedTasksManager("test.txt"));
     }
 
     @Test
     public void shouldSave() {
-        taskManager = new FileBackedTasksManager(Paths.get("test.txt"));
+        taskManager = new FileBackedTasksManager("test.txt");
         ZonedDateTime startTimeFirstTask = ZonedDateTime.of(  // Стартовое время первой задачи
                 LocalDateTime.of(2022, 5, 1, 9, 0, 0, 0),
                 ZoneId.of("Europe/Moscow"));
@@ -119,24 +119,24 @@ public class FileBackedTasksManagerTests extends TaskManagerTest<FileBackedTasks
 
     @Test
     public void shouldLoadFromFile() {
-        taskManager = new FileBackedTasksManager(Paths.get("noStatus.txt"));
+        taskManager = new FileBackedTasksManager("noStatus.txt");
         ManagerSaveException ex = Assertions.assertThrows(ManagerSaveException.class,
-                () -> FileBackedTasksManager.loadFromFile (Paths.get(taskManager.getPath().getFileName().toString())));
+                () -> FileBackedTasksManager.loadFromFile (taskManager.getPath().getFileName().toString()));
         Assertions.assertEquals("Нет данных для восстановления статуса объекта", ex.getMessage());
 
-        taskManager = new FileBackedTasksManager(Paths.get("lackOfData.txt"));
+        taskManager = new FileBackedTasksManager("lackOfData.txt");
         ArrayIndexOutOfBoundsException ex1 = Assertions.assertThrows(ArrayIndexOutOfBoundsException.class,
-                () -> FileBackedTasksManager.loadFromFile (Paths.get(taskManager.getPath().getFileName().toString())));
+                () -> FileBackedTasksManager.loadFromFile (taskManager.getPath().getFileName().toString()));
         Assertions.assertEquals("Недостаточно данных для восстановления объекта", ex1.getMessage());
 
-        taskManager = new FileBackedTasksManager(Paths.get("noType.txt"));
+        taskManager = new FileBackedTasksManager("noType.txt");
         ManagerSaveException ex2 = Assertions.assertThrows(ManagerSaveException.class,
-                () -> FileBackedTasksManager.loadFromFile (Paths.get(taskManager.getPath().getFileName().toString())));
+                () -> FileBackedTasksManager.loadFromFile (taskManager.getPath().getFileName().toString()));
         Assertions.assertEquals("Нет данных для определения типа объекта", ex2.getMessage());
 
-        taskManager = new FileBackedTasksManager(Paths.get("test.txt"));
-        FileBackedTasksManager manager = FileBackedTasksManager.loadFromFile (Paths.get(taskManager.getPath().
-                getFileName().toString()));
+        taskManager = new FileBackedTasksManager("test.txt");
+        FileBackedTasksManager manager = FileBackedTasksManager.loadFromFile (taskManager.getPath().
+                getFileName().toString());
 
         Epic epic = new Epic("Эпик 1", "Первый Эпик");
         epic.setStatus(Status.NEW);

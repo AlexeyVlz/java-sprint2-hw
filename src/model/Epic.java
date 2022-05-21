@@ -12,12 +12,13 @@ import java.util.Objects;
 
 
 public class Epic extends Records {
-    final private HashMap<Integer, Subtask> subtasks;
+    private HashMap<Integer, Subtask> subtasks;
 
     public Epic(String title, String specification) {
         super(title, 0, specification);
         this.subtasks = new HashMap<>();
         this.duration = calculateDuration();
+        this.status = Status.NEW;
     }
 
     public Duration calculateDuration() {
@@ -68,6 +69,10 @@ public class Epic extends Records {
         return subtasks;
     }
 
+    public void setSubtasks() {
+        this.subtasks = new HashMap<>();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -91,7 +96,6 @@ public class Epic extends Records {
         } else {
             stringStartTime = "null";
         }
-        return id + "," + Types.EPIC + "," + title + "," + status + "," + specification + "," +
-                stringStartTime + "," + (int) duration.toMinutes();
+        return id + "," + Types.EPIC + "," + title + "," + status + "," + specification + ",";
     }
 }

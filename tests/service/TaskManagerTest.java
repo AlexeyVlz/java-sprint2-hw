@@ -1,5 +1,6 @@
 package service;
 
+import exceptions.ManagerSaveException;
 import model.Epic;
 import model.Status;
 import model.Subtask;
@@ -69,6 +70,10 @@ public abstract class TaskManagerTest <T extends TaskManager> {
         task.setId(1);
         taskManager.getNewTask(objectsForTests.firstTask());
         Assertions.assertEquals(task, taskManager.getTasks().get(1));
+
+        ManagerSaveException ex = Assertions.assertThrows(ManagerSaveException.class,
+                () -> taskManager.getNewTask(objectsForTests.firstTask()));
+        Assertions.assertEquals("Время выполнения задачи пересекается со временем Задача 1", ex.getMessage());
     }
 
     @Test
@@ -156,33 +161,38 @@ public abstract class TaskManagerTest <T extends TaskManager> {
         subtask1.setId(2);
         taskManager.getNewSubtask(subtask1);
         Assertions.assertEquals(subtask1, taskManager.getEpics().get(1).getSubtasks().get(2));
+
+        ManagerSaveException ex1 = Assertions.assertThrows(ManagerSaveException.class,
+                () -> taskManager.getNewSubtask(subtask1));
+        Assertions.assertEquals("Время выполнения задачи пересекается со временем Подзадача 1", ex1.getMessage());
     }
 
 
     @Test
     public void shouldUpdateSubtask() {
         ZonedDateTime startTimeFirstTask = ZonedDateTime.of(  // Стартовое время первой подзадачи
-                LocalDateTime.of(2022,5,1,9,0,0,0),
+                LocalDateTime.of(2022,5,2,9,0,0,0),
                 ZoneId.of("Europe/Moscow"));
         ZonedDateTime startTimeSecondTask = ZonedDateTime.of(  // Стартовое время второй подзадачи
-                LocalDateTime.of(2022,5,1,11,0,0,0),
+                LocalDateTime.of(2022,5,2,11,0,0,0),
                 ZoneId.of("Europe/Moscow"));
         ZonedDateTime startTimeThirdTask = ZonedDateTime.of(  // Стартовое время второй подзадачи
-                LocalDateTime.of(2022,5,1,15,0,0,0),
+                LocalDateTime.of(2022,5,2,15,0,0,0),
                 ZoneId.of("Europe/Moscow"));
         taskManager.getNewEpic(new Epic("Эпик 1", "Первый"));
+
         taskManager.getNewSubtask(objectsForTests.firstSubtask());
         taskManager.getNewSubtask(objectsForTests.secondSubtask());
         Subtask subtask = objectsForTests.thirdSubtask();
         subtask.setId(777);
         NullPointerException ex = Assertions.assertThrows(NullPointerException.class,
                 () -> taskManager.updateSubtask(subtask));
-        Assertions.assertEquals("Объект не найден", ex.getMessage());
+        Assertions.assertEquals("Такая подзадача не создавалась", ex.getMessage());
         Subtask subtask1 = new Subtask("Подзадача 3", Status.NEW, "Третья подзадача", 333,
                 startTimeThirdTask, Duration.ofMinutes(60));
         NullPointerException ex1 = Assertions.assertThrows(NullPointerException.class,
                 () -> taskManager.updateSubtask(subtask1));
-        Assertions.assertEquals("Объект не найден", ex1.getMessage());
+        Assertions.assertEquals("Эпик не найден", ex1.getMessage());
 
         taskManager.getNewEpic(new Epic("Эпик 2", "Первый"));
         taskManager.getNewSubtask(new Subtask("Подзадача 1", Status.NEW, "Первая подзадача", 4,
@@ -294,19 +304,16 @@ public abstract class TaskManagerTest <T extends TaskManager> {
 
     @Test
     public void shouldCalculateStatus() {
-        NullPointerException ex = Assertions.assertThrows(NullPointerException.class,
-                () -> taskManager.calculateStatus(777));
-        Assertions.assertEquals("Такой эпик не создавался", ex.getMessage());
         taskManager.getNewEpic(new Epic("Эпик 1", "Первый"));
         Assertions.assertEquals(Status.NEW, taskManager.getEpics().get(1).getStatus());
         ZonedDateTime startTimeFirstTask = ZonedDateTime.of(  // Стартовое время первой подзадачи
-                LocalDateTime.of(2022,5,1,9,0,0,0),
+                LocalDateTime.of(2022,5,2,9,0,0,0),
                 ZoneId.of("Europe/Moscow"));
         ZonedDateTime startTimeSecondTask = ZonedDateTime.of(  // Стартовое время второй подзадачи
-                LocalDateTime.of(2022,5,1,11,0,0,0),
+                LocalDateTime.of(2022,5,2,11,0,0,0),
                 ZoneId.of("Europe/Moscow"));
         ZonedDateTime startTimeThirdTask = ZonedDateTime.of(  // Стартовое время второй подзадачи
-                LocalDateTime.of(2022,5,1,15,0,0,0),
+                LocalDateTime.of(2022,5,2,15,0,0,0),
                 ZoneId.of("Europe/Moscow"));
         taskManager.getNewSubtask(new Subtask("Подзадача 1", Status.NEW, "Первая подзадача", 1,
                 startTimeFirstTask, Duration.ofMinutes(60)));
