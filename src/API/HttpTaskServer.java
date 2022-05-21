@@ -31,6 +31,8 @@ public class HttpTaskServer {
     HttpServer httpServer;
     TaskManager manager;
     Gson gson;
+    Gson gsonForNewEpc;
+
 
     public HttpTaskServer(HTTPTaskManager manager) {
         this.manager = manager;
@@ -62,6 +64,7 @@ public class HttpTaskServer {
                         return Duration.ofMinutes(jsonReader.nextInt());
                     }
                 }).create();
+        this.gsonForNewEpc = new GsonBuilder().serializeNulls().create();
 
     }
 
@@ -71,6 +74,10 @@ public class HttpTaskServer {
 
     public Gson getGson() {
         return gson;
+    }
+
+    public Gson getGsonForNewEpc() {
+        return gsonForNewEpc;
     }
 
     public void createServer() throws IOException {
@@ -149,17 +156,17 @@ public class HttpTaskServer {
             public void handle(HttpExchange exchange) throws IOException {
                 InputStream inputStream = exchange.getRequestBody();
                 String body = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
-                Epic epic = gson.fromJson(body, Epic.class);
+                Epic epic = gsonForNewEpc.fromJson(body, Epic.class);
                     manager.getNewEpic(epic);
                     if(manager.getEpics().containsKey(epic.getId())) {
                         exchange.sendResponseHeaders(200, 0);
                         try (OutputStream os = exchange.getResponseBody()) {
-                            os.write(gson.toJson("Задача успешно добавлена").getBytes());
+                            os.write(gsonForNewEpc.toJson("Задача успешно добавлена").getBytes());
                         }
                     } else {
                         exchange.sendResponseHeaders(404, 0);
                         try (OutputStream os = exchange.getResponseBody()) {
-                            os.write(gson.toJson("Что-то пошло не так. Добавить новый эпик не удалось").getBytes());
+                            os.write(gsonForNewEpc.toJson("Что-то пошло не так. Добавить новый эпик не удалось").getBytes());
                         }
                     }
             }

@@ -26,7 +26,7 @@ public class InMemoryTaskManager implements TaskManager {
         epics = new HashMap<>();
         historyManager = Managers.getDefaultHistory();
         id = 0;
-        this.prioritizedTasks = new TreeSet<Records> ((o1, o2) -> {
+        this.prioritizedTasks = new TreeSet<> ((o1, o2) -> {
             if(o1.getStartTime().isBefore(o2.getStartTime())) {
                 return -1;
             } else if (o1.getStartTime().isAfter(o2.getStartTime())) {

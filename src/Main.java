@@ -1,12 +1,13 @@
 import API.HttpTaskServer;
 import API.KVServer;
+import service.Managers;
 
 import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) throws IOException{
 
-        //HttpTaskServer httpTaskServer = new HttpTaskServer();
+        //HttpTaskServer httpTaskServer = Managers.getDefault()
         //httpTaskServer.createServer();
 
         //new KVServer().start();
