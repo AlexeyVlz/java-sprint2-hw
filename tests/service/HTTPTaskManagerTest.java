@@ -19,6 +19,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.TreeSet;
 
@@ -510,7 +511,12 @@ public class HTTPTaskManagerTest {
 
         Type type = new TypeToken<TreeSet<Records>>(){}.getType();
         TreeSet<Records> prioritizedTasks = server.getGson().fromJson(body, type);
-        Assertions.assertEquals(prioritizedTasks, server.getManager().getPrioritizedTasks());
+        List<Integer> prioritizedTasksId = new ArrayList<>();
+        List<Integer> shouldBePrioritizedTasksId = new ArrayList<>(Arrays.asList(1, 2, 4, 5));
+        for(Records record : prioritizedTasks) {
+            prioritizedTasksId.add(record.getId());
+        }
+        Assertions.assertEquals(prioritizedTasksId, shouldBePrioritizedTasksId);
     }
 
     @Test
@@ -526,7 +532,7 @@ public class HTTPTaskManagerTest {
         HttpResponse.BodyHandler<String> handler = HttpResponse.BodyHandlers.ofString();
         HttpResponse<String> response = client.send(request, handler);
         String body = response.body();
-        Type type = new TypeToken<ArrayList<Records>>(){}.getType();
+        Type type = new TypeToken<ArrayList<Task>>(){}.getType();
         ArrayList<Records> history = server.getGson().fromJson(body, type);
         Assertions.assertEquals(history, server.getManager().getHistoryManager().getHistory());
     }*/
