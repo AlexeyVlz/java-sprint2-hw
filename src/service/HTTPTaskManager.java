@@ -15,7 +15,7 @@ import java.util.List;
 public class HTTPTaskManager extends FileBackedTasksManager implements TaskManager{
 
 
-    KVTaskClient kvTaskClient;
+     private final KVTaskClient kvTaskClient;
 
     public HTTPTaskManager(String url) throws IOException, InterruptedException {
         super(url);

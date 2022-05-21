@@ -28,42 +28,17 @@ import java.time.format.DateTimeFormatter;
 
 public class HttpTaskServer {
 
-    HttpServer httpServer;
-    TaskManager manager;
-    Gson gson;
-    Gson gsonForNewEpc;
+    private HttpServer httpServer;
+    private final TaskManager manager;
+    private final Gson gson;
+    private final Gson gsonForNewEpc;
 
 
     public HttpTaskServer(HTTPTaskManager manager) {
         this.manager = manager;
         this.gson = new GsonBuilder().serializeNulls().
-                registerTypeAdapter(ZonedDateTime.class, new TypeAdapter<ZonedDateTime>() {
-                    DateTimeFormatter formatterWriter = DateTimeFormatter.ofPattern("dd--MM--yyyy, HH:mm:ss,SSS");
-                    DateTimeFormatter formatterReader = DateTimeFormatter.ofPattern("yyyy, MM, dd, HH, mm, ss, SSS");
-
-                    @Override
-                    public void write(final JsonWriter jsonWriter, final ZonedDateTime DateTime) throws IOException {
-                        jsonWriter.value(DateTime.format(formatterWriter));
-                    }
-
-                    @Override
-                    public ZonedDateTime read(final JsonReader jsonReader) throws IOException {
-                        return ZonedDateTime.of(LocalDateTime.parse(jsonReader.nextString(), formatterWriter),
-                                ZoneId.systemDefault());
-
-                    }
-                }).
-                registerTypeAdapter(Duration.class, new TypeAdapter<Duration>() {
-                    @Override
-                    public void write(final JsonWriter jsonWriter, final Duration duration) throws IOException {
-                        jsonWriter.value(duration.toMinutes());
-                    }
-
-                    @Override
-                    public Duration read(final JsonReader jsonReader) throws IOException {
-                        return Duration.ofMinutes(jsonReader.nextInt());
-                    }
-                }).create();
+                registerTypeAdapter(ZonedDateTime.class, timeAdapterZonedDateTime()).
+                registerTypeAdapter(Duration.class, TypeAdapterDuration()).create();
         this.gsonForNewEpc = new GsonBuilder().serializeNulls().create();
 
     }
@@ -501,5 +476,38 @@ public class HttpTaskServer {
 
     public void stop() {
         httpServer.stop(1);
+    }
+
+    private TypeAdapter<ZonedDateTime> timeAdapterZonedDateTime() {
+        return new TypeAdapter<ZonedDateTime>() {
+            DateTimeFormatter formatterWriter = DateTimeFormatter.ofPattern("dd--MM--yyyy, HH:mm:ss,SSS");
+            DateTimeFormatter formatterReader = DateTimeFormatter.ofPattern("yyyy, MM, dd, HH, mm, ss, SSS");
+
+            @Override
+            public void write(final JsonWriter jsonWriter, final ZonedDateTime DateTime) throws IOException {
+                jsonWriter.value(DateTime.format(formatterWriter));
+            }
+
+            @Override
+            public ZonedDateTime read(final JsonReader jsonReader) throws IOException {
+                return ZonedDateTime.of(LocalDateTime.parse(jsonReader.nextString(), formatterWriter),
+                        ZoneId.systemDefault());
+
+            }
+        };
+    }
+
+    private TypeAdapter<Duration> TypeAdapterDuration() {
+        return new TypeAdapter<Duration>() {
+            @Override
+            public void write(final JsonWriter jsonWriter, final Duration duration) throws IOException {
+                jsonWriter.value(duration.toMinutes());
+            }
+
+            @Override
+            public Duration read(final JsonReader jsonReader) throws IOException {
+                return Duration.ofMinutes(jsonReader.nextInt());
+            }
+        };
     }
 }
