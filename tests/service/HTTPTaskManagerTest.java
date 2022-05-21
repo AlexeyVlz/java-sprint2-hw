@@ -532,8 +532,8 @@ public class HTTPTaskManagerTest {
         HttpResponse.BodyHandler<String> handler = HttpResponse.BodyHandlers.ofString();
         HttpResponse<String> response = client.send(request, handler);
         String body = response.body();
-        Type type = new TypeToken<ArrayList<Task>>(){}.getType();
-        ArrayList<Records> history = server.getGson().fromJson(body, type);
+        Type type = new TypeToken<ArrayList<? extends Records>>(){}.getType();
+        ArrayList<? extends Records> history = server.getGson().fromJson(body, type);
         Assertions.assertEquals(history, server.getManager().getHistoryManager().getHistory());
     }*/
 
